@@ -1,0 +1,1 @@
+Pure Python 3 with standard library only (`dataclasses`, `enum`, `typing`, `random`, `argparse`, `time`, `datetime`). No external dependencies; UTF-8 console output is forced on Windows via `sys.stdout.reconfigure(encoding='utf-8')`.

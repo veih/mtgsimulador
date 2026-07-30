@@ -1,0 +1,9 @@
+The project is organized as a small Python package with clear separation of concerns:
+- `src/card.py` defines the core data model (`Card`, `ManaCost`, `SpellEffect`, enums for `CardType`, `Color`, `Zone`, `Keyword`, `TargetType`, `EffectType`) — the foundational layer with no dependencies on other modules.
+- `src/game_state.py` builds on card models to define `PlayerState` (zones, mana pool, drawing/milling, discard) and `GameState` (turn/phase tracking, active player rotation, game-over conditions via `is_game_over`).
+- `src/rules_engine.py` implements the turn structure (beginning → main → combat → main → end phases), combat resolution (first strike, double strike, trample, lifelink, deathtouch), spell effect resolution, state-based actions, and land/mana mechanics. It depends only on `card` and `game_state`.
+- `src/player.py` provides an `AIPlayer` controller with aggressiveness-tuned decision logic for playing lands, casting creatures/removal/spells, declaring attackers/blockers, and scoring blocker choices.
+- `src/simulator.py` orchestrates full matches via `MatchSimulator`, running repeated `simulate_match` calls and aggregating results into `MatchupStats` / `MatchResult` dataclasses.
+- `decks/__init__.py` defines six pre-built decks (Red Deck Wins, White Weenie, Green Stompy, Black Control, Blue Tempo, Gruul Aggro) built from cards in `src/cards_db.py`.
+- `main.py` is the CLI entry point using `argparse` to support interactive mode, single matchup (`--deck-a/--deck-b`), all-matchups sweep (`--all-matchups`), deck listing, and reproducibility via `--seed`.
+- Dependency direction is strictly one-way: `main → simulator → rules_engine + player → game_state → card`. There are no circular imports except deliberate lazy `from .rules_engine import RulesEngine` inside `player.py` to avoid import-time cycles.

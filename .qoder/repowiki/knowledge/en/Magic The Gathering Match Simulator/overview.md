@@ -1,0 +1,1 @@
+A Python-based MTG match simulator that runs head-to-head deck matchups with AI-controlled players, enforcing game rules and producing statistical win-rate analysis across multiple games.

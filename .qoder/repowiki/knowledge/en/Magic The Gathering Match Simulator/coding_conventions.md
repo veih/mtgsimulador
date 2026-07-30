@@ -1,0 +1,6 @@
+- Game entities and result containers are defined as `@dataclass` objects (e.g., `Card`, `PlayerState`, `GameState`, `MatchResult`, `MatchupStats`, `SpellEffect`, `ManaCost`) rather than plain classes.
+- Behavioral flags and categories are modeled as `Enum` subclasses with `auto()` values (`CardType`, `Color`, `Zone`, `Keyword`, `TargetType`, `EffectType`), and card abilities are checked via `card.has_keyword(Keyword.X)`.
+- Mutable game state is passed by reference through layered constructors: `RulesEngine(state)`, `AIPlayer(aggressiveness)`, `MatchSimulator(deck_a, deck_b, name_a, name_b, verbosity)`, keeping data and behavior separate.
+- Logging uses `state.log(f"  [TAG] message")` with bracketed tags (`[DMG]`, `[HEAL]`, `[LAND]`, `[SPELL]`, `[COMBAT]`, `[DEST]`, `[EXILE]`, `[DRAW]`, `[MANA]`, `[PUMP]`, `[MILL]`, `[CARD]`) for consistent traceability.
+- Deck construction follows a uniform pattern: a `_build_deck(card_list, deck_size=60)` helper expands named card tuples into 60-card lists, auto-filling missing slots with basic lands matching the deck's colors.
+- Optional cross-module imports are deferred with local `from .module import X` statements inside methods (e.g., `RulesEngine` imported inside `AIPlayer._cast_*`) to break circular import dependencies.

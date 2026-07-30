@@ -1,0 +1,1 @@
+Run the CLI directly: `python main.py` for interactive mode, `python main.py --deck-a "Red Deck Wins" --deck-b "Green Stompy" --matches 100` for a specific matchup, `python main.py --all-matchups --matches 50` to simulate every pairwise matchup, or `python test_game.py` to run the step-by-step turn-8 diagnostic test.
