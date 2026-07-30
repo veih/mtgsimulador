@@ -139,7 +139,7 @@ class MatchSimulator:
         ai2 = AIPlayer(aggressiveness=0.5 + random.uniform(-0.15, 0.15))
 
         # Cria motor de regras
-        engine = RulesEngine(state)
+        engine = RulesEngine(state, recorder=recorder)
 
         # Loop principal do jogo
         while not state.is_game_over:
@@ -147,10 +147,6 @@ class MatchSimulator:
                 engine.execute_turn(ai1)
             else:
                 engine.execute_turn(ai2)
-            
-            # Grava frame apos cada turno
-            if recorder:
-                recorder.record_frame(state)
 
         # Coleta resultado
         winner_idx = state.winner

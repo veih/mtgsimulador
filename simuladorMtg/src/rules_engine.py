@@ -12,8 +12,14 @@ from .game_state import GameState, PlayerState
 class RulesEngine:
     """Motor de regras que processa cada fase do turno e resolve efeitos."""
 
-    def __init__(self, state: GameState):
+    def __init__(self, state: GameState, recorder=None):
         self.state = state
+        self.recorder = recorder
+    
+    def _record_frame(self, phase: str = ""):
+        """Grava um frame se houver recorder."""
+        if self.recorder:
+            self.recorder.record_frame(self.state, phase)
 
     # ─────────────────────────────────────────
     # State-Based Actions (SBAs)
@@ -66,8 +72,11 @@ class RulesEngine:
 
         # 1. BEGINNING PHASE
         self._untap_step(active)
+        self._record_frame("untap")
         self._upkeep_step(active)
+        self._record_frame("upkeep")
         self._draw_step(active)
+        self._record_frame("draw")
 
         if s.is_game_over:
             return
@@ -76,11 +85,13 @@ class RulesEngine:
         s.phase = "precombat_main"
         if ai_controller:
             ai_controller.main_phase(active, inactive, s)
+        self._record_frame("precombat_main")
         if s.is_game_over:
             return
 
         # 3. COMBAT PHASE
         self._combat_phase(active, inactive, ai_controller)
+        self._record_frame("combat")
         if s.is_game_over:
             return
 
@@ -88,12 +99,15 @@ class RulesEngine:
         s.phase = "postcombat_main"
         if ai_controller:
             ai_controller.main_phase(active, inactive, s)
+        self._record_frame("postcombat_main")
         if s.is_game_over:
             return
 
         # 5. ENDING PHASE
         self._end_step(active)
+        self._record_frame("end")
         self._cleanup_step(active)
+        self._record_frame("cleanup")
 
         # Fim do turno
         active.end_of_turn_cleanup()
