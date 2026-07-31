@@ -1,0 +1,70 @@
+{
+  "name": "Jund",
+  "format": "modern",
+  "cards": [
+    {
+      "name": "Bloodbraid Elf",
+      "quantity": 4
+    },
+    {
+      "name": "Dark Confidant",
+      "quantity": 3
+    },
+    {
+      "name": "Kolaghan's Command",
+      "quantity": 4
+    },
+    {
+      "name": "Lightning Bolt",
+      "quantity": 4
+    },
+    {
+      "name": "Fatal Push",
+      "quantity": 4
+    },
+    {
+      "name": "Inquisition of Kozilek",
+      "quantity": 4
+    },
+    {
+      "name": "Thoughtseize",
+      "quantity": 3
+    },
+    {
+      "name": "Tarmogoyf",
+      "quantity": 4
+    },
+    {
+      "name": "Wrenn and Six",
+      "quantity": 2
+    },
+    {
+      "name": "Liliana of the Veil",
+      "quantity": 2
+    },
+    {
+      "name": "Blood Crypt",
+      "quantity": 3
+    },
+    {
+      "name": "Overgrown Tomb",
+      "quantity": 2
+    },
+    {
+      "name": "Stomping Ground",
+      "quantity": 2
+    },
+    {
+      "name": "Forest",
+      "quantity": 3
+    },
+    {
+      "name": "Mountain",
+      "quantity": 3
+    },
+    {
+      "name": "Swamp",
+      "quantity": 2
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "name": "Urza's Saga Tron",
+  "format": "modern",
+  "cards": [
+    {
+      "name": "Karn Liberated",
+      "quantity": 4
+    },
+    {
+      "name": "Expedition Map",
+      "quantity": 4
+    },
+    {
+      "name": "Chromatic Star",
+      "quantity": 4
+    },
+    {
+      "name": "Chromatic Sphere",
+      "quantity": 4
+    },
+    {
+      "name": "Sylvan Scrying",
+      "quantity": 4
+    },
+    {
+      "name": "Urza's Mine",
+      "quantity": 4
+    },
+    {
+      "name": "Urza's Power Plant",
+      "quantity": 4
+    },
+    {
+      "name": "Urza's Tower",
+      "quantity": 4
+    },
+    {
+      "name": "Urza's Saga",
+      "quantity": 4
+    },
+    {
+      "name": "Oblivion Stone",
+      "quantity": 2
+    },
+    {
+      "name": "Mindslaver",
+      "quantity": 1
+    },
+    {
+      "name": "Forest",
+      "quantity": 6
+    },
+    {
+      "name": "Wastes",
+      "quantity": 3
+    }
+  ]
+}

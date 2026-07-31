@@ -1,0 +1,62 @@
+{
+  "name": "Amulet Titan",
+  "format": "modern",
+  "cards": [
+    {
+      "name": "Primeval Titan",
+      "quantity": 4
+    },
+    {
+      "name": "Simian Spirit Guide",
+      "quantity": 4
+    },
+    {
+      "name": "Goblin Engineer",
+      "quantity": 2
+    },
+    {
+      "name": "Ancient Stirrings",
+      "quantity": 4
+    },
+    {
+      "name": "Sylvan Scrying",
+      "quantity": 4
+    },
+    {
+      "name": "Expedition Map",
+      "quantity": 4
+    },
+    {
+      "name": "Amulet of Vigor",
+      "quantity": 4
+    },
+    {
+      "name": "Urza's Saga",
+      "quantity": 2
+    },
+    {
+      "name": "Eldrazi Temple",
+      "quantity": 2
+    },
+    {
+      "name": "Cloudpost",
+      "quantity": 2
+    },
+    {
+      "name": "Tolaria West",
+      "quantity": 2
+    },
+    {
+      "name": "Valakut, the Molten Pinnacle",
+      "quantity": 4
+    },
+    {
+      "name": "Forest",
+      "quantity": 6
+    },
+    {
+      "name": "Mountain",
+      "quantity": 4
+    }
+  ]
+}

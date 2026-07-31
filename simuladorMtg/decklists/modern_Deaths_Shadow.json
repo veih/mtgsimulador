@@ -1,0 +1,70 @@
+{
+  "name": "Death's Shadow",
+  "format": "modern",
+  "cards": [
+    {
+      "name": "Death's Shadow",
+      "quantity": 4
+    },
+    {
+      "name": "Temur Battle Rage",
+      "quantity": 4
+    },
+    {
+      "name": "Ragavan, Nimble Pilferer",
+      "quantity": 4
+    },
+    {
+      "name": "Lightning Bolt",
+      "quantity": 4
+    },
+    {
+      "name": "Fatal Push",
+      "quantity": 4
+    },
+    {
+      "name": "Daze",
+      "quantity": 2
+    },
+    {
+      "name": "Counterspell",
+      "quantity": 2
+    },
+    {
+      "name": "Delirium Skeins",
+      "quantity": 4
+    },
+    {
+      "name": "Thought Scour",
+      "quantity": 4
+    },
+    {
+      "name": "Street Wraith",
+      "quantity": 4
+    },
+    {
+      "name": "Watery Grave",
+      "quantity": 3
+    },
+    {
+      "name": "Steam Vents",
+      "quantity": 2
+    },
+    {
+      "name": "Scalding Tarn",
+      "quantity": 4
+    },
+    {
+      "name": "Island",
+      "quantity": 3
+    },
+    {
+      "name": "Swamp",
+      "quantity": 3
+    },
+    {
+      "name": "Mountain",
+      "quantity": 2
+    }
+  ]
+}

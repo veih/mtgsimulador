@@ -2079,5 +2079,185 @@
       "normal": "barktooth_warbeard_normal.jpg",
       "art_crop": "barktooth_warbeard_art_crop.jpg"
     }
+  },
+  "thassa_s_oracle": {
+    "name": "Thassa's Oracle",
+    "type_line": "Creature — Merfolk Wizard",
+    "oracle_text": "When this creature enters, look at the top X cards of your library, where X is your devotion to blue. Put up to one of them on top of your library and the rest on the bottom of your library in a random order. If X is greater than or equal to the number of cards in your library, you win the game. (Each {U} in the mana costs of permanents you control counts toward your devotion to blue.)",
+    "mana_cost": "{U}{U}",
+    "local_images": {
+      "art_crop": "thassa_s_oracle_art_crop.jpg"
+    }
+  },
+  "ad_nauseam": {
+    "name": "Ad Nauseam",
+    "type_line": "Instant",
+    "oracle_text": "Reveal the top card of your library and put that card into your hand. You lose life equal to its mana value. You may repeat this process any number of times.",
+    "mana_cost": "{3}{B}{B}",
+    "local_images": {
+      "art_crop": "ad_nauseam_art_crop.jpg"
+    }
+  },
+  "angel_s_grace": {
+    "name": "Angel's Grace",
+    "type_line": "Instant",
+    "oracle_text": "Split second (As long as this spell is on the stack, players can't cast spells or activate abilities that aren't mana abilities.)\nYou can't lose the game this turn and your opponents can't win the game this turn. Until end of turn, damage that would reduce your life total to less than 1 reduces it to 1 instead.",
+    "mana_cost": "{W}",
+    "local_images": {
+      "art_crop": "angel_s_grace_art_crop.jpg"
+    }
+  },
+  "phyrexian_unlife": {
+    "name": "Phyrexian Unlife",
+    "type_line": "Enchantment",
+    "oracle_text": "You don't lose the game for having 0 or less life.\nAs long as you have 0 or less life, all damage is dealt to you as though its source had infect. (Damage is dealt to you in the form of poison counters.)",
+    "mana_cost": "{2}{W}",
+    "local_images": {
+      "art_crop": "phyrexian_unlife_art_crop.jpg"
+    }
+  },
+  "lotus_bloom": {
+    "name": "Lotus Bloom",
+    "type_line": "Artifact",
+    "oracle_text": "Suspend 3—{0} (Rather than cast this card from your hand, pay {0} and exile it with three time counters on it. At the beginning of your upkeep, remove a time counter. When the last is removed, you may cast it without paying its mana cost.)\n{T}, Sacrifice this artifact: Add three mana of any one color.",
+    "mana_cost": "",
+    "local_images": {
+      "art_crop": "lotus_bloom_art_crop.jpg"
+    }
+  },
+  "pact_of_negation": {
+    "name": "Pact of Negation",
+    "type_line": "Instant",
+    "oracle_text": "Counter target spell.\nAt the beginning of your next upkeep, pay {3}{U}{U}. If you don't, you lose the game.",
+    "mana_cost": "{0}",
+    "local_images": {
+      "art_crop": "pact_of_negation_art_crop.jpg"
+    }
+  },
+  "force_of_negation": {
+    "name": "Force of Negation",
+    "type_line": "Instant",
+    "oracle_text": "If it's not your turn, you may exile a blue card from your hand rather than pay this spell's mana cost.\nCounter target noncreature spell. If that spell is countered this way, exile it instead of putting it into its owner's graveyard.",
+    "mana_cost": "{1}{U}{U}",
+    "local_images": {
+      "art_crop": "force_of_negation_art_crop.jpg"
+    }
+  },
+  "preordain": {
+    "name": "Preordain",
+    "type_line": "Sorcery",
+    "oracle_text": "Scry 2, then draw a card. (To scry 2, look at the top two cards of your library, then put any number of them on the bottom and the rest on top in any order.)",
+    "mana_cost": "{U}",
+    "local_images": {
+      "art_crop": "preordain_art_crop.jpg"
+    }
+  },
+  "profane_tutor": {
+    "name": "Profane Tutor",
+    "type_line": "Sorcery",
+    "oracle_text": "Suspend 2—{1}{B} (Rather than cast this card from your hand, pay {1}{B} and exile it with two time counters on it. At the beginning of your upkeep, remove a time counter. When the last is removed, you may cast it without paying its mana cost.)\nSearch your library for a card, put that card into your hand, then shuffle.",
+    "mana_cost": "",
+    "local_images": {
+      "art_crop": "profane_tutor_art_crop.jpg"
+    }
+  },
+  "path_to_exile": {
+    "name": "Path to Exile",
+    "type_line": "Instant",
+    "oracle_text": "Exile target creature. Its controller may search their library for a basic land card, put that card onto the battlefield tapped, then shuffle.",
+    "mana_cost": "{W}",
+    "local_images": {
+      "art_crop": "path_to_exile_art_crop.jpg"
+    }
+  },
+  "seachrome_coast": {
+    "name": "Seachrome Coast",
+    "type_line": "Land",
+    "oracle_text": "This land enters tapped unless you control two or fewer other lands.\n{T}: Add {W} or {U}.",
+    "mana_cost": "",
+    "local_images": {
+      "art_crop": "seachrome_coast_art_crop.jpg"
+    }
+  },
+  "darkslick_shores": {
+    "name": "Darkslick Shores",
+    "type_line": "Land",
+    "oracle_text": "This land enters tapped unless you control two or fewer other lands.\n{T}: Add {U} or {B}.",
+    "mana_cost": "",
+    "local_images": {
+      "art_crop": "darkslick_shores_art_crop.jpg"
+    }
+  },
+  "hallowed_fountain": {
+    "name": "Hallowed Fountain",
+    "type_line": "Land — Plains Island",
+    "oracle_text": "({T}: Add {W} or {U}.)\nAs this land enters, you may pay 2 life. If you don't, it enters tapped.",
+    "mana_cost": "",
+    "local_images": {
+      "art_crop": "hallowed_fountain_art_crop.jpg"
+    }
+  },
+  "watery_grave": {
+    "name": "Watery Grave",
+    "type_line": "Land — Island Swamp",
+    "oracle_text": "({T}: Add {U} or {B}.)\nAs this land enters, you may pay 2 life. If you don't, it enters tapped.",
+    "mana_cost": "",
+    "local_images": {
+      "art_crop": "watery_grave_art_crop.jpg"
+    }
+  },
+  "godless_shrine": {
+    "name": "Godless Shrine",
+    "type_line": "Land — Plains Swamp",
+    "oracle_text": "({T}: Add {W} or {B}.)\nAs this land enters, you may pay 2 life. If you don't, it enters tapped.",
+    "mana_cost": "",
+    "local_images": {
+      "art_crop": "godless_shrine_art_crop.jpg"
+    }
+  },
+  "gemstone_mine": {
+    "name": "Gemstone Mine",
+    "type_line": "Land",
+    "oracle_text": "This land enters with three mining counters on it.\n{T}, Remove a mining counter from this land: Add one mana of any color. If there are no mining counters on this land, sacrifice it.",
+    "mana_cost": "",
+    "local_images": {
+      "art_crop": "gemstone_mine_art_crop.jpg"
+    }
+  },
+  "otawara__soaring_city": {
+    "name": "Otawara, Soaring City",
+    "type_line": "Legendary Land",
+    "oracle_text": "{T}: Add {U}.\nChannel — {3}{U}, Discard this card: Return target artifact, creature, enchantment, or planeswalker to its owner's hand. This ability costs {1} less to activate for each legendary creature you control.",
+    "mana_cost": "",
+    "local_images": {
+      "art_crop": "otawara__soaring_city_art_crop.jpg"
+    }
+  },
+  "sleight_of_hand": {
+    "name": "Sleight of Hand",
+    "type_line": "Sorcery",
+    "oracle_text": "Look at the top two cards of your library. Put one of them into your hand and the other on the bottom of your library.",
+    "mana_cost": "{U}",
+    "local_images": {
+      "art_crop": "sleight_of_hand_art_crop.jpg"
+    }
+  },
+  "spoils_of_the_vault": {
+    "name": "Spoils of the Vault",
+    "type_line": "Instant",
+    "oracle_text": "Choose a card name. Reveal cards from the top of your library until you reveal a card with that name, then put that card into your hand. Exile all other cards revealed this way, and you lose 1 life for each of the exiled cards.",
+    "mana_cost": "{B}",
+    "local_images": {
+      "art_crop": "spoils_of_the_vault_art_crop.jpg"
+    }
+  },
+  "concealed_courtyard": {
+    "name": "Concealed Courtyard",
+    "type_line": "Land",
+    "oracle_text": "This land enters tapped unless you control two or fewer other lands.\n{T}: Add {W} or {B}.",
+    "mana_cost": "",
+    "local_images": {
+      "art_crop": "concealed_courtyard_art_crop.jpg"
+    }
   }
 }

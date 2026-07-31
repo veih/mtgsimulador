@@ -1,0 +1,30 @@
+{
+  "cards": [
+    ["thassa_s_oracle", 4],
+    ["ad_nauseam", 4],
+    ["angel_s_grace", 4],
+    ["phyrexian_unlife", 4],
+    ["lotus_bloom", 4],
+    ["pact_of_negation", 4],
+    ["force_of_negation", 4],
+    ["preordain", 4],
+    ["profane_tutor", 4],
+    ["sleight_of_hand", 2],
+    ["spoils_of_the_vault", 2],
+    ["path_to_exile", 2]
+  ],
+  "land": "island",
+  "land_count": 0,
+  "lands": [
+    ["seachrome_coast", 4],
+    ["concealed_courtyard", 4],
+    ["darkslick_shores", 2],
+    ["hallowed_fountain", 2],
+    ["watery_grave", 2],
+    ["godless_shrine", 1],
+    ["gemstone_mine", 2],
+    ["otawara__soaring_city", 1]
+  ],
+  "missing": [],
+  "name": "Ad Nauseam"
+}

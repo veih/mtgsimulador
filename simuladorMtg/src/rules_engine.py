@@ -7,6 +7,7 @@ import random
 from typing import Optional
 from .card import (Card, Keyword, EffectType, SpellEffect, TargetType, Color)
 from .game_state import GameState, PlayerState
+from .card_effects import AdvancedEffects, CardEffectParser
 
 
 class RulesEngine:
@@ -317,6 +318,47 @@ class RulesEngine:
         s.log(f"  [SPELL] {caster.name} conjura {card.name} {card.mana_cost}")
         caster.spells_cast += 1
 
+        # Verifica se tem efeito avançado específico
+        card_name_lower = card.name.lower()
+        
+        if card_name_lower == 'ad nauseam':
+            AdvancedEffects.resolve_ad_nauseam(card, caster, s)
+            return
+        elif card_name_lower == "angel's grace":
+            AdvancedEffects.resolve_angels_grace(card, caster, s)
+            return
+        elif card_name_lower == 'phyrexian unlife':
+            AdvancedEffects.resolve_phyrexian_unlife(card, caster, s)
+            return
+        elif card_name_lower == "thassa's oracle":
+            AdvancedEffects.resolve_thassas_oracle(card, caster, s)
+            return
+        elif card_name_lower == 'preordain':
+            AdvancedEffects.resolve_preordain(card, caster, s)
+            return
+        elif card_name_lower == 'profane tutor':
+            AdvancedEffects.resolve_profane_tutor(card, caster, s)
+            return
+        elif card_name_lower == 'lotus bloom':
+            AdvancedEffects.resolve_lotus_bloom(card, caster, s)
+            return
+        elif card_name_lower == 'pact of negation':
+            AdvancedEffects.resolve_pact_of_negation(card, caster, s)
+            return
+        elif card_name_lower == 'force of negation':
+            AdvancedEffects.resolve_force_of_negation(card, caster, s)
+            return
+        elif card_name_lower == 'path to exile':
+            AdvancedEffects.resolve_path_to_exile(card, caster, s, target_creature)
+            return
+        elif card_name_lower == 'sleight of hand':
+            AdvancedEffects.resolve_sleight_of_hand(card, caster, s)
+            return
+        elif card_name_lower == 'spoils of the vault':
+            AdvancedEffects.resolve_spoils_of_the_vault(card, caster, s)
+            return
+
+        # Se não tem efeito avançado, usa os efeitos normais
         for effect in card.effects:
             self._resolve_effect(effect, card, caster, target_player, target_creature)
 

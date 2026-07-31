@@ -1,0 +1,86 @@
+{
+  "name": "Ad Nauseam",
+  "format": "modern",
+  "cards": [
+    {
+      "name": "Thassa's Oracle",
+      "quantity": 4
+    },
+    {
+      "name": "Ad Nauseam",
+      "quantity": 4
+    },
+    {
+      "name": "Angel's Grace",
+      "quantity": 4
+    },
+    {
+      "name": "Phyrexian Unlife",
+      "quantity": 4
+    },
+    {
+      "name": "Lotus Bloom",
+      "quantity": 4
+    },
+    {
+      "name": "Pact of Negation",
+      "quantity": 4
+    },
+    {
+      "name": "Force of Negation",
+      "quantity": 4
+    },
+    {
+      "name": "Preordain",
+      "quantity": 4
+    },
+    {
+      "name": "Profane Tutor",
+      "quantity": 4
+    },
+    {
+      "name": "Sleight of Hand",
+      "quantity": 2
+    },
+    {
+      "name": "Spoils of the Vault",
+      "quantity": 2
+    },
+    {
+      "name": "Path to Exile",
+      "quantity": 2
+    },
+    {
+      "name": "Seachrome Coast",
+      "quantity": 4
+    },
+    {
+      "name": "Concealed Courtyard",
+      "quantity": 4
+    },
+    {
+      "name": "Darkslick Shores",
+      "quantity": 2
+    },
+    {
+      "name": "Hallowed Fountain",
+      "quantity": 2
+    },
+    {
+      "name": "Watery Grave",
+      "quantity": 2
+    },
+    {
+      "name": "Godless Shrine",
+      "quantity": 1
+    },
+    {
+      "name": "Gemstone Mine",
+      "quantity": 2
+    },
+    {
+      "name": "Otawara, Soaring City",
+      "quantity": 1
+    }
+  ]
+}

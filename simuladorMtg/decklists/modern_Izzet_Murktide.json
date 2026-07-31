@@ -1,0 +1,66 @@
+{
+  "name": "Izzet Murktide",
+  "format": "modern",
+  "cards": [
+    {
+      "name": "Murktide Regent",
+      "quantity": 4
+    },
+    {
+      "name": "Ragavan, Nimble Pilferer",
+      "quantity": 4
+    },
+    {
+      "name": "Dragon's Rage Channeler",
+      "quantity": 4
+    },
+    {
+      "name": "Expressive Iteration",
+      "quantity": 4
+    },
+    {
+      "name": "Lightning Bolt",
+      "quantity": 4
+    },
+    {
+      "name": "Spell Snare",
+      "quantity": 2
+    },
+    {
+      "name": "Counterspell",
+      "quantity": 2
+    },
+    {
+      "name": "Unholy Heat",
+      "quantity": 4
+    },
+    {
+      "name": "Thought Scour",
+      "quantity": 4
+    },
+    {
+      "name": "Serum Visions",
+      "quantity": 4
+    },
+    {
+      "name": "Steam Vents",
+      "quantity": 4
+    },
+    {
+      "name": "Scalding Tarn",
+      "quantity": 4
+    },
+    {
+      "name": "Spirebluff Canal",
+      "quantity": 2
+    },
+    {
+      "name": "Island",
+      "quantity": 5
+    },
+    {
+      "name": "Mountain",
+      "quantity": 3
+    }
+  ]
+}

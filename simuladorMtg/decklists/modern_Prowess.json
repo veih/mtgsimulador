@@ -1,0 +1,54 @@
+{
+  "name": "Prowess",
+  "format": "modern",
+  "cards": [
+    {
+      "name": "Monastery Swiftspear",
+      "quantity": 4
+    },
+    {
+      "name": "Soul-Scar Mage",
+      "quantity": 4
+    },
+    {
+      "name": "Goblin Guide",
+      "quantity": 4
+    },
+    {
+      "name": "Eidolon of the Great Revel",
+      "quantity": 4
+    },
+    {
+      "name": "Lava Dart",
+      "quantity": 2
+    },
+    {
+      "name": "Lightning Bolt",
+      "quantity": 4
+    },
+    {
+      "name": "Lava Spike",
+      "quantity": 4
+    },
+    {
+      "name": "Rift Bolt",
+      "quantity": 2
+    },
+    {
+      "name": "Burst Lightning",
+      "quantity": 2
+    },
+    {
+      "name": "Mishra's Bauble",
+      "quantity": 4
+    },
+    {
+      "name": "Mountain",
+      "quantity": 18
+    },
+    {
+      "name": "Sacred Foundry",
+      "quantity": 2
+    }
+  ]
+}

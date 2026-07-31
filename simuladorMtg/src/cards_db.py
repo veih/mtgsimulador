@@ -399,6 +399,27 @@ ALL_CARDS = {
     "knight_of_white": KNIGHT_OF_THE_WHITE, "barktooth": BARKTOOTH,
     # Green pump (Giant Growth é verde na verdade, vamos corrigir)
     "giant_growth": GIANT_GROWTH,
+    # Cartas adicionais para Modern
+    "sleight_of_hand": Card(
+        id="sleight_of_hand", name="Sleight of Hand",
+        mana_cost=ManaCost(blue=1), card_type=CardType.SORCERY,
+        colors={Color.BLUE},
+        text="Look at the top two cards of your library. Put one into your hand and the other on the bottom.",
+        effects=[]
+    ),
+    "spoils_of_the_vault": Card(
+        id="spoils_of_the_vault", name="Spoils of the Vault",
+        mana_cost=ManaCost(black=1), card_type=CardType.SORCERY,
+        colors={Color.BLACK},
+        text="Exile the top card of your library. You gain life equal to its mana value. Draw a card.",
+        effects=[]
+    ),
+    "concealed_courtyard": Card(
+        id="concealed_courtyard", name="Concealed Courtyard",
+        mana_cost=ManaCost(), card_type=CardType.ARTIFACT,
+        colors=set(), text="Concealed Courtyard enters tapped. Tap: add W or R.",
+        is_land=True, land_mana={Color.WHITE, Color.RED}
+    ),
 }
 
 
@@ -407,3 +428,12 @@ def get_card(card_id: str) -> Card:
     if card_id in ALL_CARDS:
         return ALL_CARDS[card_id].copy()
     raise ValueError(f"Carta não encontrada: {card_id}")
+
+
+# Mapeamento de nomes para IDs (para importação de decks)
+CARD_NAME_TO_ID = {
+    card.name: card_id for card_id, card in ALL_CARDS.items()
+}
+# Adiciona variações em minúsculo
+for card_id, card in ALL_CARDS.items():
+    CARD_NAME_TO_ID[card.name.lower()] = card_id

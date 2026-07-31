@@ -30,6 +30,8 @@ class PlayerState:
     life_gained: int = 0
     creatures_lost: int = 0
     spells_cast: int = 0
+    cant_lose_game_this_turn: bool = False
+    has_phyrexian_unlife: bool = False
 
     @property
     def creatures_on_board(self) -> list:
@@ -139,6 +141,8 @@ class PlayerState:
         self.mana_pool = {}
         self.lands_played = 0
         self.cards_drawn_this_turn = 0
+        # Reseta efeitos de turno
+        self.cant_lose_game_this_turn = False
 
     def discard_random(self) -> Optional[Card]:
         """Descarta uma carta aleatória da mão."""
@@ -204,12 +208,18 @@ class GameState:
     def is_game_over(self) -> bool:
         if self.winner is not None:
             return True
+        # Verifica se player1 morreu (considerando Angel's Grace e Phyrexian Unlife)
         if self.player1.is_dead:
-            self.winner = 1
-            return True
+            if not self.player1.cant_lose_game_this_turn:
+                if not (self.player1.has_phyrexian_unlife and self.player1.life == 0):
+                    self.winner = 1
+                    return True
+        # Verifica se player2 morreu
         if self.player2.is_dead:
-            self.winner = 0
-            return True
+            if not self.player2.cant_lose_game_this_turn:
+                if not (self.player2.has_phyrexian_unlife and self.player2.life == 0):
+                    self.winner = 0
+                    return True
         # Deck out
         if self.player1.has_no_cards and len(self.player1.library) == 0:
             self.winner = 1
