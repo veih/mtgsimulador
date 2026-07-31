@@ -58,6 +58,7 @@ class GameEvent(Enum):
     TURN_ENDED = auto()
     PHASE_CHANGED = auto()
     STEP_CHANGED = auto()
+    UPKEEP = auto()
     
     # Stack events
     SPELL_PUT_ON_STACK = auto()

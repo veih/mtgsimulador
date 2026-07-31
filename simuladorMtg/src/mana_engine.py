@@ -350,7 +350,7 @@ class ManaAbilityEngine:
         abilities = []
         
         for card in player.battlefield:
-            if not card.is_land():
+            if not card.is_land:
                 continue
             
             card_name = card.name.lower()

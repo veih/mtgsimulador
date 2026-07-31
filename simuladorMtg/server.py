@@ -247,7 +247,8 @@ class MTGHandler(SimpleHTTPRequestHandler):
                 self.send_json({'error': 'Numero de partidas deve ser entre 1 e 100'}, 400)
                 return
             
-            sim = MatchSimulator(deck_a, deck_b, deck_a_name, deck_b_name, verbosity=0)
+            from src.simulator_v2 import MatchSimulatorV2
+            sim = MatchSimulatorV2(deck_a, deck_b, deck_a_name, deck_b_name, verbosity=1)
             replay_manager = ReplayManager(REPLAY_DIR)
             
             saved_replays = []
@@ -282,7 +283,10 @@ class MTGHandler(SimpleHTTPRequestHandler):
             self.send_json(response)
             
         except Exception as e:
-            self.send_json({'error': str(e)}, 500)
+            import traceback
+            error_detail = traceback.format_exc()
+            print(f"[ERROR] Simulacao falhou: {error_detail}")
+            self.send_json({'error': str(e), 'detail': error_detail}, 500)
 
     def serve_custom_decks(self):
         """Retorna lista de decks customizados."""
@@ -658,6 +662,22 @@ class MTGHandler(SimpleHTTPRequestHandler):
                         result['reward'] = 2
                     else:
                         result['message'] = 'Não foi possível conjurar a magia'
+        
+        elif action == 'suspend':
+            card_index = params.get('card_index', 0)
+            if card_index < len(state.player1.hand):
+                card = state.player1.hand[card_index]
+                success = engine.suspend_card(state.player1, card)
+                if success:
+                    result['message'] = f'Carta suspensa: {card.name}'
+                    result['reward'] = 1
+                else:
+                    result['message'] = 'Não foi possível suspender a carta'
+        
+        elif action == 'process_upkeep':
+            engine.process_upkeep(state.player1)
+            result['message'] = 'Upkeep processado'
+            result['reward'] = 0
         
         elif action == 'attack':
             # Ataca com todas as criaturas

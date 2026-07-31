@@ -354,7 +354,7 @@ class ManaSolver:
         castable = []
         
         for card in hand:
-            if card.is_land():
+            if card.is_land:
                 continue
             
             can_cast, plan = self.can_cast(player, card)

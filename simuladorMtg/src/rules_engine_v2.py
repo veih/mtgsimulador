@@ -129,7 +129,7 @@ class RulesEngineV2:
             self._log(f"{player.name} ja jogou um terreno neste turno")
             return False
         
-        if not card.is_land():
+        if not card.is_land:
             self._log(f"{card.name} nao e um terreno")
             return False
         
@@ -213,6 +213,144 @@ class RulesEngineV2:
         # Pipeline
         self.resolve_pipeline()
         return True
+    
+    def suspend_card(self, player: PlayerState, card: Card, time_counters: int = 3, cost: int = 0) -> bool:
+        """
+        Suspende uma carta da mao.
+        Exila a carta com marcadores de tempo.
+        A cada upkeep, remove 1 marcador.
+        Quando chega a 0, conjura sem pagar o custo.
+        """
+        if card not in player.hand:
+            self._log(f"{card.name} nao esta na mao de {player.name}")
+            return False
+        
+        # Verifica se a carta tem Suspend
+        from .modern_card_abilities import get_card_abilities
+        abilities = get_card_abilities(card.name)
+        has_suspend = False
+        for ability in abilities.get("abilities", []):
+            if ability.get("type") == "special_action" and "suspend" in ability.get("effect", ""):
+                has_suspend = True
+                time_counters = ability.get("params", {}).get("time_counters", 3)
+                cost = ability.get("params", {}).get("cost", 0)
+                break
+        
+        if not has_suspend:
+            self._log(f"{card.name} nao tem Suspend")
+            return False
+        
+        # Paga o custo de Suspend (geralmente 0)
+        if cost > 0:
+            total_mana = sum(player.mana_pool.values())
+            if total_mana < cost:
+                self._log(f"Mana insuficiente para Suspend {card.name} (precisa {cost}, tem {total_mana})")
+                return False
+            
+            # Paga mana
+            remaining = cost
+            for color in list(player.mana_pool.keys()):
+                if remaining <= 0:
+                    break
+                pay = min(player.mana_pool[color], remaining)
+                player.mana_pool[color] -= pay
+                remaining -= pay
+                if player.mana_pool[color] == 0:
+                    del player.mana_pool[color]
+        
+        # Remove da mao
+        player.hand.remove(card)
+        
+        # Adiciona marcadores de tempo
+        card.time_counters = time_counters
+        card.suspended = True
+        
+        # Exila a carta
+        player.exile.append(card)
+        
+        # Registra trigger de upkeep para remover marcadores
+        self._register_suspend_trigger(card, player)
+        
+        self._log(f"{player.name} suspendeu {card.name} com {time_counters} marcadores de tempo")
+        
+        # Pipeline
+        self.resolve_pipeline()
+        return True
+    
+    def _register_suspend_trigger(self, card: Card, player: PlayerState):
+        """Registra o trigger de upkeep para remover marcadores de Suspend."""
+        def remove_counter(event, state):
+            if card.time_counters > 0:
+                card.time_counters -= 1
+                self._log(f"  Remove 1 marcador de {card.name} (restam {card.time_counters})")
+                
+                # Se chegou a 0, conjura sem pagar o custo
+                if card.time_counters == 0:
+                    self._cast_from_suspend(card, player)
+        
+        # Cria trigger
+        trigger = TriggeredAbility(
+            card=card,
+            event_type=GameEvent.UPKEEP,
+            condition=lambda e: card in player.exile and card.time_counters > 0,
+            effect=remove_counter
+        )
+        
+        # Registra no trigger manager
+        self.trigger_manager.register_trigger(trigger)
+        self._log(f"  Registrado trigger de upkeep para {card.name}")
+    
+    def _cast_from_suspend(self, card: Card, player: PlayerState):
+        """Conjura uma carta do exilio quando seus marcadores de Suspend chegam a 0."""
+        self._log(f"  Ultimo marcador removido! Conjura {card.name} sem pagar o custo")
+        
+        # Remove do exilio
+        if card in player.exile:
+            player.exile.remove(card)
+        
+        # Remove atributos de Suspend
+        card.suspended = False
+        card.time_counters = 0
+        
+        # Conjura sem pagar o custo (coloca em campo se for permanente, ou resolve se for magia)
+        if card.is_creature or card.is_land or card.type in ['artifact', 'enchantment', 'planeswalker']:
+            # Entra no campo
+            card.tapped = False
+            if card.is_creature:
+                card.summoning_sick = True
+            player.battlefield.append(card)
+            
+            self.event_bus.emit_simple(
+                GameEvent.PERMANENT_ENTERS,
+                source=card,
+                controller=player
+            )
+            self._log(f"  {card.name} entrou no campo de batalha")
+        else:
+            # Magia instantanea ou feiticaro - resolve o efeito
+            self._resolve_spell_from_suspend(card, player)
+    
+    def _resolve_spell_from_suspend(self, card: Card, player: PlayerState):
+        """Resolve o efeito de uma magia conjurada do Suspend."""
+        opponent = self.state.player2 if player == self.state.player1 else self.state.player1
+        effect_name = get_effect_name(card.name)
+        
+        if effect_name:
+            self._resolve_card_effect(effect_name, card, player, opponent)
+        
+        # Vai para o cemiterio
+        player.graveyard.append(card)
+        self._log(f"  {card.name} foi para o cemiterio")
+    
+    def process_upkeep(self, player: PlayerState):
+        """Processa a fase de upkeep do jogador."""
+        self._log(f"--- Upkeep de {player.name} ---")
+        
+        # Emite evento de upkeep
+        self.event_bus.emit_simple(GameEvent.UPKEEP, controller=player)
+        
+        # Pipeline para processar triggers
+        self.resolve_pipeline()
     
     def _resolve_spell_item(self, item: StackItem):
         """Resolve uma magia da pilha."""
@@ -332,7 +470,7 @@ class RulesEngineV2:
                 exiled = player.library.pop(0)
                 player.exile.append(exiled)
                 cmc_total += getattr(exiled, 'cmc', 0)
-                if exiled.is_land():
+                if exiled.is_land:
                     exiled.tapped = True
                     player.battlefield.append(exiled)
                     break
@@ -358,7 +496,7 @@ class RulesEngineV2:
             card = player.library.pop(0)
             player.exile.append(card)
             
-            if card.is_land():
+            if card.is_land:
                 continue  # Continua exilando
             
             # Nao-terreno encontrado
@@ -450,13 +588,13 @@ class RulesEngineV2:
         else:
             # Joga terreno
             for card in player.hand[:]:
-                if card.is_land() and player.lands_played == 0:
+                if card.is_land and player.lands_played == 0:
                     self.play_land(player, card)
                     break
             
             # Conjura magias
             for card in player.hand[:]:
-                if not card.is_land():
+                if not card.is_land:
                     total_mana = sum(player.mana_pool.values())
                     cmc = getattr(card, 'cmc', 0)
                     if cmc <= total_mana:

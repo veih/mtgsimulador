@@ -49,13 +49,13 @@ class LandPlanner:
         plan = LandPlan()
         
         # Filtra terrenos na mao
-        lands_in_hand = [c for c in hand if c.is_land()]
+        lands_in_hand = [c for c in hand if c.is_land]
         if not lands_in_hand:
             plan.reasoning = "Nenhum terreno na mao"
             return plan
         
         # Filtra magias na mao
-        spells_in_hand = [c for c in hand if not c.is_land()]
+        spells_in_hand = [c for c in hand if not c.is_land]
         
         # Se nao tem magias, joga qualquer terreno
         if not spells_in_hand:
@@ -96,7 +96,7 @@ class LandPlanner:
         """Analisa quais cores os terrenos em campo produzem."""
         available = {}
         for card in battlefield:
-            if card.is_land() and hasattr(card, 'land_mana'):
+            if card.is_land and hasattr(card, 'land_mana'):
                 for color in card.land_mana:
                     available[color] = available.get(color, 0) + 1
         return available
@@ -128,7 +128,7 @@ class LandPlanner:
             score += 12  # Fetch lands sao muito fortes
         
         # Penaliza duplicatas
-        existing_names = [c.name.lower() for c in battlefield if c.is_land()]
+        existing_names = [c.name.lower() for c in battlefield if c.is_land]
         if land_name in existing_names:
             score -= 3
         
@@ -248,7 +248,7 @@ class StrategicAI:
         actions = []
         
         # Acoes de terreno
-        lands_in_hand = [c for c in player.hand if c.is_land()]
+        lands_in_hand = [c for c in player.hand if c.is_land]
         if lands_in_hand and player.lands_played == 0:
             for land in lands_in_hand:
                 actions.append(GameDecision(

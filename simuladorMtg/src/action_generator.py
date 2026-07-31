@@ -141,7 +141,7 @@ class ActionGenerator:
             card_name = card.name.lower()
             
             # Verifica se e um terreno
-            if card.is_land():
+            if card.is_land:
                 if player.lands_played == 0:
                     actions.append(GameAction(
                         action_type=ActionType.PLAY_LAND,
@@ -206,7 +206,7 @@ class ActionGenerator:
         """Gera acoes de mana para um permanente."""
         actions = []
         
-        if not permanent.is_land():
+        if not permanent.is_land:
             return actions
         
         # Verifica se pode virar para mana
