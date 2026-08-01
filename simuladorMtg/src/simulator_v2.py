@@ -146,6 +146,17 @@ class MatchSimulatorV2:
         """Executa o turno de um jogador usando StrategicAI."""
         engine._log(f"\n--- Turno de {player.name} ---")
         
+        # Reseta pool de mana e contador de terrenos no inicio do turno
+        player.mana_pool = {}
+        player.lands_played = 0
+        
+        # Desvira todas as criaturas e terrenos (untap)
+        for card in player.battlefield:
+            card.tapped = False
+            card.has_attacked = False
+            if getattr(card, 'is_creature', False):
+                card.summoning_sick = False
+        
         # Fase de compra
         player.draw_cards(1)
         engine._log(f"{player.name} comprou uma carta")
@@ -183,11 +194,14 @@ class MatchSimulatorV2:
                 plan = decision.plan
                 
                 if plan and plan.can_pay:
-                    # Executa plano de mana (vira terrenos)
+                    # Executa plano de mana: vira terrenos E adiciona mana ao pool
                     for step in plan.steps:
                         if step.source and hasattr(step.source, 'tapped'):
                             step.source.tapped = True
                             engine._log(f"  {player.name} virou {step.source.name} para mana")
+                        # Adiciona mana produzido ao pool do jogador
+                        for color, amount in step.mana_produced.items():
+                            player.mana_pool[color] = player.mana_pool.get(color, 0) + amount
                     
                     # Conjura a magia
                     success = engine.cast_spell(player, card)
@@ -225,11 +239,12 @@ class MatchSimulatorV2:
             else:
                 break
 
-        # Fase de combate (se nao atacou ainda)
-        # Simplificado: ataca com todas as criaturas disponiveis
+        # Fase de combate (se a IA nao decidiu atacar neste turno)
+        # Evita ataque duplo verificando has_attacked nas criaturas
         attackers = [c for c in player.battlefield 
                      if hasattr(c, 'is_creature') and c.is_creature 
-                     and not c.tapped and not getattr(c, 'summoning_sick', False)]
+                     and not c.tapped and not getattr(c, 'summoning_sick', False)
+                     and not getattr(c, 'has_attacked', False)]
         
         if attackers:
             engine.declare_attackers(player, attackers)
@@ -241,16 +256,6 @@ class MatchSimulatorV2:
             discarded = player.hand.pop()
             player.graveyard.append(discarded)
             engine._log(f"  {player.name} descartou {discarded.name}")
-
-        # Vira todos os terrenos
-        for land in player.battlefield:
-            if land.is_land:
-                land.tapped = False
-
-        # Remove summoning sickness das criaturas
-        for creature in player.battlefield:
-            if hasattr(creature, 'summoning_sick'):
-                creature.summoning_sick = False
 
         # Proximo jogador
         state.active_player_index = 1 - state.active_player_index

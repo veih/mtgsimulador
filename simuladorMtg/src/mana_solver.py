@@ -36,6 +36,7 @@ class ManaStep:
     color: Any = None     # Cor produzida
     amount: int = 1
     pays_for: str = ""    # O que esta pagando (generic, blue, etc.)
+    mana_produced: Dict = field(default_factory=dict)  # {Color: amount} produzido neste passo
 
 
 class ManaSolver:
@@ -85,7 +86,11 @@ class ManaSolver:
         
         # Tenta encontrar uma combinacao
         remaining = dict(required_mana)
-        used_sources = set()
+        used_sources = set()  # guarda id() das cartas para evitar duplicatas
+        
+        # Funcao auxiliar para marcar/verificar uso
+        def is_used(card): return id(card) in used_sources
+        def mark_used(card): used_sources.add(id(card))
         
         # 1. Primeiro paga as cores especificas (nao-genericas)
         for color in list(remaining.keys()):
@@ -100,7 +105,7 @@ class ManaSolver:
             
             # Tenta encontrar terrenos que produzem essa cor
             for ability in available:
-                if ability.source in used_sources:
+                if is_used(ability.source):
                     continue
                 if ability.ability_type not in [ManaActionType.TAP_FOR_MANA, ManaActionType.TAP_PAY_LIFE_FOR_MANA]:
                     continue
@@ -115,12 +120,13 @@ class ManaSolver:
                         source=ability.source,
                         color=color,
                         amount=use,
-                        pays_for=color.name
+                        pays_for=color.name,
+                        mana_produced={color: use}
                     )
                     plan.steps.append(step)
                     
                     remaining[color] -= use
-                    used_sources.add(ability.source)
+                    mark_used(ability.source)
                     
                     if remaining[color] <= 0:
                         del remaining[color]
@@ -134,7 +140,7 @@ class ManaSolver:
             generic_needed = remaining["generic"]
             
             for ability in available:
-                if ability.source in used_sources:
+                if is_used(ability.source):
                     continue
                 if ability.ability_type not in [ManaActionType.TAP_FOR_MANA, ManaActionType.TAP_PAY_LIFE_FOR_MANA]:
                     continue
@@ -149,12 +155,13 @@ class ManaSolver:
                         source=ability.source,
                         color=color,
                         amount=1,
-                        pays_for="generic"
+                        pays_for="generic",
+                        mana_produced={color: 1}
                     )
                     plan.steps.append(step)
                     
                     generic_needed -= 1
-                    used_sources.add(ability.source)
+                    mark_used(ability.source)
                     
                     if generic_needed <= 0:
                         break
@@ -165,7 +172,7 @@ class ManaSolver:
         
         # 3. Tenta terrenos de qualquer cor (Gemstone Mine, Lotus Bloom, etc.)
         for ability in available:
-            if ability.source in used_sources:
+            if is_used(ability.source):
                 continue
             
             # Terrenos que produzem qualquer cor (5 cores no produces)
@@ -184,11 +191,12 @@ class ManaSolver:
                             source=ability.source,
                             color=color,
                             amount=1,
-                            pays_for=color.name
+                            pays_for=color.name,
+                            mana_produced={color: 1}
                         )
                         plan.steps.append(step)
                         remaining[color] -= 1
-                        used_sources.add(ability.source)
+                        mark_used(ability.source)
                         
                         if remaining[color] <= 0:
                             del remaining[color]
@@ -205,11 +213,12 @@ class ManaSolver:
                             source=ability.source,
                             color=color,
                             amount=1,
-                            pays_for="generic"
+                            pays_for="generic",
+                            mana_produced={color: 1}
                         )
                         plan.steps.append(step)
                         remaining["generic"] -= 1
-                        used_sources.add(ability.source)
+                        mark_used(ability.source)
                     
                     if remaining["generic"] <= 0:
                         del remaining["generic"]
@@ -218,7 +227,7 @@ class ManaSolver:
         for ability in available:
             if ability.ability_type != ManaActionType.FETCH_LAND:
                 continue
-            if ability.source in used_sources:
+            if is_used(ability.source):
                 continue
             
             # Verifica se pode buscar um terreno que produza a cor necessaria
@@ -237,11 +246,12 @@ class ManaSolver:
                             source=ability.source,
                             color=color,
                             amount=1,
-                            pays_for=color.name
+                            pays_for=color.name,
+                            mana_produced={color: 1}
                         )
                         plan.steps.append(step)
                         remaining[color] -= 1
-                        used_sources.add(ability.source)
+                        mark_used(ability.source)
                         
                         if remaining[color] <= 0:
                             del remaining[color]

@@ -54,11 +54,12 @@ class SBAEngine:
         for player in [state.player1, state.player2]:
             dead_creatures = []
             for card in player.battlefield[:]:
-                if hasattr(card, 'current_toughness') and card.current_toughness <= 0:
+                if not (hasattr(card, 'is_creature') and card.is_creature):
+                    continue
+                # Usa effective_toughness para respeitar o sentinel -1 = nao modificado
+                eff_t = card.effective_toughness if hasattr(card, 'effective_toughness') else getattr(card, 'toughness', 1)
+                if eff_t <= 0:
                     dead_creatures.append(card)
-                elif hasattr(card, 'is_creature') and card.is_creature:
-                    if hasattr(card, 'toughness') and card.toughness <= 0:
-                        dead_creatures.append(card)
             
             for card in dead_creatures:
                 player.battlefield.remove(card)

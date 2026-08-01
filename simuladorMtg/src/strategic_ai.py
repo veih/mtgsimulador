@@ -154,22 +154,68 @@ class StrategicAI:
     IA estrategica que escolhe a linha de jogo.
     Usa o Mana Solver para saber o que pode conjurar.
     Usa o Land Planner para decidir qual terreno jogar.
+    Analisa ameacas do oponente para priorizar remocao e bloqueios.
     """
     
     def __init__(self):
         self.mana_solver = ManaSolver()
         self.land_planner = LandPlanner()
     
-    def decide(self, player, opponent, game_state) -> GameDecision:
+    def _evaluate_threat(self, opponent_battlefield: List) -> float:
+        """
+        Calcula o nivel de ameaca do campo do oponente.
+        Considera poder total, voo, e potencial letal.
+        """
+        total_power = 0
+        has_flying = False
+        has_trample = False
+        
+        for card in opponent_battlefield:
+            if not (hasattr(card, 'is_creature') and card.is_creature):
+                continue
+            if getattr(card, 'tapped', False):
+                continue  # Criaturas viradas nao ameacam
+            
+            power = getattr(card, 'effective_power', getattr(card, 'power', 0)) or 0
+            total_power += power
+            
+            keywords = getattr(card, 'keywords', [])
+            if keywords:
+                kw_lower = [str(k).lower() for k in keywords]
+                if any('flying' in k for k in kw_lower):
+                    has_flying = True
+                if any('trample' in k for k in kw_lower):
+                    has_trample = True
+        
+        threat = float(total_power)
+        if has_flying:
+            threat += 3.0
+        if has_trample:
+            threat += 1.5
+        return threat
+    
+    def _is_removal_spell(self, card) -> bool:
+        """Verifica se a carta e um spell de remocao."""
+        name = card.name.lower()
+        removal_keywords = [
+            'path to exile', 'swords to plowshares', 'doom blade', 'terminate',
+            'fatal push', 'lightning bolt', 'lightning helix', 'push', 'exile',
+            'destroy', 'bounce', 'murder', 'dismember'
+        ]
+        return any(kw in name for kw in removal_keywords)
+    
+    def decide(self, player, opponent, game_state) -> 'GameDecision':
         """
         Toma uma decisao para o turno atual.
         
         Ordem de prioridade:
         1. Jogar terreno (se ainda nao jogou)
-        2. Conjurar magias (se possivel)
+        2. Conjurar magias (com prioridade por ameaca do oponente)
         3. Atacar (se tiver criaturas)
         4. Passar turno
         """
+        # Avalia ameaca atual do oponente
+        threat_level = self._evaluate_threat(getattr(opponent, 'battlefield', []))
         
         # 1. Jogar terreno?
         if player.lands_played == 0:
@@ -184,14 +230,14 @@ class StrategicAI:
         # 2. Conjurar magias?
         castable = self.mana_solver.get_all_castable(player, player.hand)
         if castable:
-            # Escolhe a melhor magia para conjurar
-            best_spell, best_plan = self._choose_best_spell(castable, player, opponent)
+            # Escolhe a melhor magia para conjurar (passando nivel de ameaca)
+            best_spell, best_plan = self._choose_best_spell(castable, player, opponent, threat_level)
             if best_spell:
                 return GameDecision(
                     action="CAST",
                     target=best_spell,
                     plan=best_plan,
-                    reasoning=f"Melhor magia: {best_spell.name}"
+                    reasoning=f"Melhor magia: {best_spell.name} (ameaca oponente: {threat_level:.1f})"
                 )
         
         # 3. Atacar?
@@ -211,8 +257,12 @@ class StrategicAI:
             reasoning="Nenhuma acao disponivel"
         )
     
-    def _choose_best_spell(self, castable: List, player, opponent) -> Tuple:
-        """Escolhe a melhor magia para conjurar."""
+    def _choose_best_spell(self, castable: List, player, opponent, threat_level: float = 0.0) -> Tuple:
+        """Escolhe a melhor magia para conjurar.
+        
+        Quando o oponente tem criaturas ameacadoras (threat_level > 4),
+        remocao recebe prioridade sobre criaturas proprias.
+        """
         if not castable:
             return None, None
         
@@ -236,7 +286,13 @@ class StrategicAI:
             if "oracle" in spell.name.lower():
                 return spell, plan
         
-        # Prioridade por CMC (menor primeiro)
+        # Se oponente tem ameaca alta (power >= 4 sem bloqueador), priorizar remocao
+        if threat_level >= 4.0:
+            for spell, plan in castable:
+                if self._is_removal_spell(spell):
+                    return spell, plan
+        
+        # Prioridade por CMC (menor primeiro) — joga mais cartas por turno
         castable.sort(key=lambda x: getattr(x[0], 'cmc', 99))
         return castable[0]
     

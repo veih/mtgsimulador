@@ -5,7 +5,7 @@ Motor de regras completo com pipeline correto:
 """
 
 import random
-from typing import Optional, List
+from typing import Optional, List, Dict
 from .card import Card, Keyword, EffectType, SpellEffect, TargetType, Color
 from .game_state import GameState, PlayerState
 from .event_bus import GameEvent, Event, EventBus
@@ -59,6 +59,48 @@ class RulesEngineV2:
     def _register_initial_triggers(self):
         """Registra triggers das cartas que ja estao no jogo."""
         pass  # Triggers sao registradas quando cartas entram em campo
+    
+    def _register_card_triggers(self, card: Card, controller: PlayerState):
+        """
+        Registra os triggered abilities de uma carta no TriggerManager.
+        Chamado sempre que um permanente entra em campo.
+        """
+        from .modern_card_abilities import MODERN_CARD_ABILITIES
+        
+        # Busca pelo nome normalizado
+        card_name_lower = card.name.lower()
+        abilities_data = MODERN_CARD_ABILITIES.get(card_name_lower, {})
+        abilities_list = abilities_data.get('abilities', []) if isinstance(abilities_data, dict) else []
+        
+        for ability in abilities_list:
+            if ability.get('type') != 'triggered':
+                continue
+            
+            event_type = ability.get('event')
+            effect_name = ability.get('effect', '')
+            if not event_type or not effect_name:
+                continue
+            
+            # Captura variaveis para o closure
+            _card = card
+            _controller = controller
+            _effect_name = effect_name
+            
+            def make_effect(c, ctrl, eff):
+                def trigger_effect(event, state):
+                    # So dispara se a carta ainda esta em campo (ou para ETB, logo apos entrar)
+                    opponent = state.player2 if ctrl == state.player1 else state.player1
+                    self._resolve_card_effect(eff, c, ctrl, opponent)
+                return trigger_effect
+            
+            trigger = TriggeredAbility(
+                card=_card,
+                event_type=event_type,
+                condition=lambda e, c=_card, ctrl=_controller: c in ctrl.battlefield or True,
+                effect=make_effect(_card, _controller, _effect_name)
+            )
+            self.trigger_manager.register_trigger(trigger)
+            self._log(f"  Trigger registrado: {card.name} on {event_type}")
     
     # ─────────────────────────────────────────
     # Pipeline Principal
@@ -142,6 +184,9 @@ class RulesEngineV2:
         player.battlefield.append(card)
         player.lands_played += 1
         
+        # Registra triggers da carta
+        self._register_card_triggers(card, player)
+        
         # Adiciona mana
         for color in card.land_mana:
             player.mana_pool[color] = player.mana_pool.get(color, 0) + 1
@@ -165,28 +210,83 @@ class RulesEngineV2:
         self.resolve_pipeline()
         return True
     
+    def _can_pay_mana_cost(self, player: PlayerState, card: Card) -> bool:
+        """
+        Verifica se o jogador pode pagar o custo da carta com o mana disponivel no pool.
+        Valida requisitos por cor antes do custo generico.
+        """
+        cmc = getattr(card, 'cmc', 0)
+        if cmc == 0:
+            return True
+        
+        colors = getattr(card, 'colors', [])
+        
+        # Monta requisito colorido: quantas de cada cor sao necessarias
+        colored_needed: Dict = {}
+        for color in colors:
+            colored_needed[color] = colored_needed.get(color, 0) + 1
+        
+        pool = dict(player.mana_pool)
+        
+        # 1. Verifica e desconta mana colorido
+        for color, needed in colored_needed.items():
+            available = pool.get(color, 0)
+            if available < needed:
+                return False
+            pool[color] = available - needed
+        
+        # 2. Verifica custo generico com o mana restante
+        generic_needed = cmc - sum(colored_needed.values())
+        if generic_needed > 0:
+            remaining_total = sum(pool.values())
+            if remaining_total < generic_needed:
+                return False
+        
+        return True
+    
+    def _pay_mana_cost(self, player: PlayerState, card: Card):
+        """
+        Deduz o custo de mana do pool do jogador.
+        Assume que _can_pay_mana_cost ja foi verificado.
+        """
+        cmc = getattr(card, 'cmc', 0)
+        colors = getattr(card, 'colors', [])
+        
+        # Desconta mana colorido primeiro
+        colored_needed: Dict = {}
+        for color in colors:
+            colored_needed[color] = colored_needed.get(color, 0) + 1
+        
+        for color, needed in colored_needed.items():
+            player.mana_pool[color] = player.mana_pool.get(color, 0) - needed
+            if player.mana_pool[color] <= 0:
+                del player.mana_pool[color]
+        
+        # Desconta custo generico com qualquer mana restante
+        generic_needed = cmc - sum(colored_needed.values())
+        for color in list(player.mana_pool.keys()):
+            if generic_needed <= 0:
+                break
+            pay = min(player.mana_pool[color], generic_needed)
+            player.mana_pool[color] -= pay
+            generic_needed -= pay
+            if player.mana_pool[color] <= 0:
+                del player.mana_pool[color]
+    
     def cast_spell(self, player: PlayerState, card: Card, targets: list = None) -> bool:
         """Jogador conjura uma magia."""
         if card not in player.hand:
             return False
         
-        # Verifica custo de mana
-        total_mana = sum(player.mana_pool.values())
-        cmc = getattr(card, 'cmc', 0)
-        if cmc > total_mana:
+        # Verifica custo de mana por cor
+        if not self._can_pay_mana_cost(player, card):
+            cmc = getattr(card, 'cmc', 0)
+            total_mana = sum(player.mana_pool.values())
             self._log(f"Mana insuficiente para {card.name} (precisa {cmc}, tem {total_mana})")
             return False
         
-        # Paga mana
-        remaining = cmc
-        for color in list(player.mana_pool.keys()):
-            if remaining <= 0:
-                break
-            pay = min(player.mana_pool[color], remaining)
-            player.mana_pool[color] -= pay
-            remaining -= pay
-            if player.mana_pool[color] == 0:
-                del player.mana_pool[color]
+        # Paga mana respeitando cores
+        self._pay_mana_cost(player, card)
         
         # Remove da mao
         player.hand.remove(card)
@@ -319,6 +419,8 @@ class RulesEngineV2:
             if card.is_creature:
                 card.summoning_sick = True
             player.battlefield.append(card)
+            # Registra triggers do permanente
+            self._register_card_triggers(card, player)
             
             self.event_bus.emit_simple(
                 GameEvent.PERMANENT_ENTERS,
@@ -369,6 +471,8 @@ class RulesEngineV2:
                 card.tapped = False
                 card.summoning_sick = True
                 player.battlefield.append(card)
+                # Registra triggers ETB da criatura
+                self._register_card_triggers(card, player)
                 self.event_bus.emit_simple(
                     GameEvent.PERMANENT_ENTERS,
                     source=card,
@@ -523,13 +627,16 @@ class RulesEngineV2:
             if creature in player.battlefield and creature.is_creature:
                 if not creature.summoning_sick and not creature.tapped:
                     creature.has_attacked = True
+                    creature.tapped = True  # Atacar vira a criatura
                     self.event_bus.emit_simple(
                         GameEvent.CREATURE_ATTACKED,
                         source=creature,
                         controller=player,
                         target=opponent
                     )
-                    power = getattr(creature, 'power', 0)
+                    power = getattr(creature, 'effective_power', None)
+                    if power is None:
+                        power = getattr(creature, 'power', 0) or 0
                     opponent.life -= power
                     self.event_bus.emit_simple(
                         GameEvent.DAMAGE_DEALT,
