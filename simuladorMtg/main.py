@@ -240,12 +240,14 @@ def interactive_mode():
     
     # Grava replays na Area de Trabalho
     os.makedirs(REPLAY_DIR, exist_ok=True)
-    # Copia viewer.html para a pasta de replays
-    viewer_src = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'viewer.html')
-    viewer_dst = os.path.join(REPLAY_DIR, 'viewer.html')
-    if os.path.exists(viewer_src) and not os.path.exists(viewer_dst):
-        import shutil
-        shutil.copy(viewer_src, viewer_dst)
+    # Copia viewer.html, viewer.css e viewer.js para a pasta de replays
+    import shutil
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    for viewer_file in ('viewer.html', 'viewer.css', 'viewer.js'):
+        src = os.path.join(base_dir, viewer_file)
+        dst = os.path.join(REPLAY_DIR, viewer_file)
+        if os.path.exists(src) and not os.path.exists(dst):
+            shutil.copy(src, dst)
     stats, saved_replays = sim.simulate_and_record(num_matches, REPLAY_DIR)
     print(f"\n  {len(saved_replays)} replays salvos em: {REPLAY_DIR}")
     print(f"  Para assistir, abra viewer.html na pasta MTG_Replays na Area de Trabalho")
@@ -386,12 +388,14 @@ def main():
         if not args.no_record:
             # Cria diretorio se nao existir
             os.makedirs(replay_dir, exist_ok=True)
-            # Copia viewer.html para a pasta de replays
-            viewer_src = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'viewer.html')
-            viewer_dst = os.path.join(replay_dir, 'viewer.html')
-            if os.path.exists(viewer_src) and not os.path.exists(viewer_dst):
-                import shutil
-                shutil.copy(viewer_src, viewer_dst)
+            # Copia viewer.html, viewer.css e viewer.js para a pasta de replays
+            import shutil
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+            for viewer_file in ('viewer.html', 'viewer.css', 'viewer.js'):
+                src = os.path.join(base_dir, viewer_file)
+                dst = os.path.join(replay_dir, viewer_file)
+                if os.path.exists(src) and not os.path.exists(dst):
+                    shutil.copy(src, dst)
             # Simula e grava replays
             stats, saved_replays = sim.simulate_and_record(args.matches, replay_dir)
             print(f"\n  {len(saved_replays)} replays salvos em: {replay_dir}")
