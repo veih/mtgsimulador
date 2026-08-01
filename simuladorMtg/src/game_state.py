@@ -213,29 +213,29 @@ class GameState:
             if not self.player1.cant_lose_game_this_turn:
                 has_unlife = any(getattr(c, 'name', '') == 'Phyrexian Unlife' for c in self.player1.battlefield)
                 if not has_unlife:
-                    self.winner = 1
+                    self.winner = 2  # player1 dead → player2 wins
                     return True
         # Verifica se player2 morreu
         if self.player2.is_dead:
             if not self.player2.cant_lose_game_this_turn:
                 has_unlife = any(getattr(c, 'name', '') == 'Phyrexian Unlife' for c in self.player2.battlefield)
                 if not has_unlife:
-                    self.winner = 0
+                    self.winner = 1  # player2 dead → player1 wins
                     return True
         # Deck out
         if self.player1.has_no_cards and len(self.player1.library) == 0:
-            self.winner = 1
+            self.winner = 2  # player1 decked out → player2 wins
             return True
         if self.player2.has_no_cards and len(self.player2.library) == 0:
-            self.winner = 0
+            self.winner = 1  # player2 decked out → player1 wins
             return True
         # Limite de turnos
         if self.turn_number > self.max_turns:
             # Quem tiver mais vida ganha
             if self.player1.life > self.player2.life:
-                self.winner = 0
+                self.winner = 1  # player1 has more life
             elif self.player2.life > self.player1.life:
-                self.winner = 1
+                self.winner = 2  # player2 has more life
             else:
                 self.winner = -1  # empate
             return True

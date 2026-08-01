@@ -412,16 +412,97 @@ async function runSimulation() {
 
 function renderReplayList(container) {
     console.log('Renderizando lista de replays:', replays.length);
+
+    // Cabeçalho com botão de limpar
+    const header = document.createElement('div');
+    header.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;';
+    header.innerHTML = `
+        <span style="font-size:11px;color:var(--text-dim);">${replays.length} replay(s) salvo(s)</span>
+        <button onclick="clearReplays()" title="Apagar todos os replays"
+            style="display:flex;align-items:center;gap:5px;padding:5px 10px;
+                   background:rgba(231,76,60,0.15);border:1px solid var(--red);
+                   color:var(--red);border-radius:4px;cursor:pointer;font-size:11px;
+                   font-weight:700;transition:background 0.2s;">
+            &#128465; Limpar Replays
+        </button>
+    `;
+    container.innerHTML = '';
+    container.appendChild(header);
+
     if (!replays.length) {
-        container.innerHTML = '<p style="color:var(--text-dim);font-size:12px;">Nenhum replay encontrado. Rode uma simulação primeiro.</p>';
+        const empty = document.createElement('p');
+        empty.style.cssText = 'color:var(--text-dim);font-size:12px;';
+        empty.textContent = 'Nenhum replay encontrado. Rode uma simulação primeiro.';
+        container.appendChild(empty);
         return;
     }
-    container.innerHTML = replays.map((r, i) => `
+
+    const list = document.createElement('div');
+    list.innerHTML = replays.map((r, i) => `
         <div class="replay-entry" onclick="loadReplay(${i})">
             <div class="re-title">${r.deck_a} vs ${r.deck_b}</div>
             <div class="re-meta">#${r.match_number} | ${r.turns} turnos | Winner: ${r.winner}</div>
         </div>
     `).join('');
+    container.appendChild(list);
+}
+
+async function clearReplays() {
+    if (!confirm('Apagar todos os replays salvos? Esta ação não pode ser desfeita.')) return;
+    try {
+        const r = await fetch('/api/clear-replays', { method: 'POST' });
+        const d = await r.json();
+        if (d.success) {
+            // Para o play se estiver rodando
+            if (isPlaying) { clearInterval(playInterval); isPlaying = false; document.getElementById('btnPlay').innerHTML = '&#x25B6; Play'; }
+            // Reseta estado local
+            replays = [];
+            currentReplay = null;
+            currentFrame = 0;
+            // Limpa a tela de jogo
+            resetBoard();
+            // Atualiza o painel de replays
+            const content = document.getElementById('spContent');
+            if (panelOpen === 'replays') renderReplayList(content);
+            // Log na tela
+            const log = document.getElementById('gameLog');
+            log.innerHTML += `<p style="color:var(--red);">&#128465; ${d.deleted} replay(s) apagado(s).</p>`;
+        } else {
+            alert('Erro ao limpar replays.');
+        }
+    } catch(e) {
+        alert('Erro de conexão: ' + e.message);
+    }
+}
+
+function resetBoard() {
+    // Reseta todas as zonas visuais para o estado inicial
+    document.getElementById('turnBadge').textContent = 'Turno 0';
+    document.getElementById('frameInfo').textContent = '0 / 0';
+    document.getElementById('gameLog').innerHTML =
+        '<p style="color:var(--gold);">Bem-vindo ao Arena Viewer!</p><p>Selecione uma partida para comecar.</p>';
+    ['p1','p2'].forEach(p => {
+        document.getElementById(`${p}Life`).textContent = '20';
+        document.getElementById(`${p}Life`).className = 'life-circle mid';
+        document.getElementById(`${p}Name`).textContent = p === 'p1' ? 'Jogador' : 'Oponente';
+        document.getElementById(`${p}Lib`).textContent = '0';
+        document.getElementById(`${p}Active`).className = 'active-indicator';
+        document.getElementById(`${p}Creatures`).innerHTML = '';
+        document.getElementById(`${p}Lands`).innerHTML = '';
+        document.getElementById(`${p}Graveyard`).innerHTML = '';
+        document.getElementById(`${p}GraveCount`).textContent = '0';
+        document.getElementById(`${p}Exile`).innerHTML = '';
+        document.getElementById(`${p}ExileCount`).textContent = '0';
+    });
+    document.getElementById('selfHandCards').innerHTML = '';
+    document.getElementById('oppHand').innerHTML = '';
+    document.getElementById('stackArea').textContent = 'Pilha vazia';
+    // Desabilita controles de navegação
+    ['btnFirst','btnPrev','btnNext','btnLast'].forEach(id => {
+        document.getElementById(id).disabled = true;
+    });
+    // Reseta indicadores de fase
+    updatePhaseDots('');
 }
 
 async function loadReplay(idx) {

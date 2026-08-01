@@ -79,6 +79,8 @@ class MTGHandler(SimpleHTTPRequestHandler):
             self.handle_import_deck()
         elif parsed.path == '/api/delete-deck':
             self.handle_delete_deck()
+        elif parsed.path == '/api/clear-replays':
+            self.handle_clear_replays()
         elif parsed.path == '/api/learning/start':
             self.handle_learning_start()
         elif parsed.path == '/api/learning/action':
@@ -137,6 +139,20 @@ class MTGHandler(SimpleHTTPRequestHandler):
         # Ordena por timestamp (mais recente primeiro)
         replays.sort(key=lambda x: x.get('timestamp', ''), reverse=True)
         self.send_json({'replays': replays})
+
+    def handle_clear_replays(self):
+        """Deleta todos os arquivos de replay salvos."""
+        replay_manager = ReplayManager(REPLAY_DIR)
+        deleted = 0
+        errors = []
+        for filename in replay_manager.list_replays():
+            try:
+                filepath = os.path.join(REPLAY_DIR, filename)
+                os.remove(filepath)
+                deleted += 1
+            except Exception as e:
+                errors.append(str(e))
+        self.send_json({'success': True, 'deleted': deleted, 'errors': errors})
 
     def serve_replay_file(self, path):
         """Serve um arquivo de replay especifico."""

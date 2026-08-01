@@ -6,7 +6,7 @@ Motor de regras completo com pipeline correto:
 
 import random
 from typing import Optional, List, Dict
-from .card import Card, Keyword, EffectType, SpellEffect, TargetType, Color
+from .card import Card, Keyword, EffectType, SpellEffect, TargetType, Color, ManaCost
 from .game_state import GameState, PlayerState
 from .event_bus import GameEvent, Event, EventBus
 from .trigger_manager import TriggerManager, TriggeredAbility, Stack, StackItem, StackItemType
@@ -413,7 +413,8 @@ class RulesEngineV2:
         card.time_counters = 0
         
         # Conjura sem pagar o custo (coloca em campo se for permanente, ou resolve se for magia)
-        if card.is_creature or card.is_land or card.type in ['artifact', 'enchantment', 'planeswalker']:
+        from .card import CardType as _CT
+        if card.is_creature or card.is_land or card.card_type in (_CT.ARTIFACT, _CT.ENCHANTMENT, _CT.PLANESWALKER):
             # Entra no campo
             card.tapped = False
             if card.is_creature:
@@ -428,6 +429,14 @@ class RulesEngineV2:
                 controller=player
             )
             self._log(f"  {card.name} entrou no campo de batalha")
+            
+            # Lotus Bloom: sacrifica imediatamente ao entrar para gerar mana
+            if card.name == "Lotus Bloom":
+                player.battlefield.remove(card)
+                player.graveyard.append(card)
+                for _ in range(3):
+                    player.mana_pool[Color.COLORLESS] = player.mana_pool.get(Color.COLORLESS, 0) + 1
+                self._log(f"  Lotus Bloom sacrificado automaticamente: +3 mana ({player.name} tem {sum(player.mana_pool.values())} mana total)")
         else:
             # Magia instantanea ou feiticaro - resolve o efeito
             self._resolve_spell_from_suspend(card, player)
@@ -502,16 +511,25 @@ class RulesEngineV2:
             self._log(f"  Phyrexian Unlife entrou no campo")
         
         elif effect_name == "thassas_oracle_etb":
+            # Coloca Oracle em campo
             card.tapped = False
             card.summoning_sick = True
             player.battlefield.append(card)
             self.event_bus.emit_simple(GameEvent.PERMANENT_ENTERS, source=card, controller=player)
-            # Verifica devocao
-            blue_devotion = sum(1 for c in player.battlefield if hasattr(c, 'colors') and Color.BLUE in getattr(c, 'colors', []))
-            self._log(f"  Devocao a azul: {blue_devotion}")
-            if blue_devotion >= 20:
+            
+            # Devocao a azul: conta pips {U} nos custos das permanentes em campo
+            devotion = sum(
+                getattr(c, 'mana_cost', ManaCost()).blue
+                for c in player.battlefield
+                if not c.is_land and hasattr(c, 'mana_cost')
+            )
+            library_count = len(player.library)
+            self._log(f"  Thassa's Oracle ETB: devocao={devotion}, biblioteca={library_count}")
+            
+            # Vitoria se devoção >= cartas restantes na biblioteca
+            if devotion >= library_count:
                 self.state.winner = 1 if player == self.state.player1 else 2
-                self._log(f"  {player.name} ganha o jogo!")
+                self._log(f"  {player.name} VENCE com Thassa's Oracle! (devocao {devotion} >= biblioteca {library_count})")
         
         elif effect_name == "preordain_effect":
             # Scry 2 + draw 1
@@ -534,11 +552,15 @@ class RulesEngineV2:
                 self.event_bus.emit_simple(GameEvent.LIFE_LOST, source=player, data={'amount': 2})
                 self._log(f"  Profane Tutor: buscou {best.name}, perdeu 2 vida")
         
+        elif effect_name == "lotus_bloom_etb":
+            # Lotus Bloom entrou em campo (veio do suspend) — nao faz nada ainda
+            self._log(f"  Lotus Bloom entrou em campo. Sacrifique-o para adicionar {3} manas.")
+        
         elif effect_name == "lotus_bloom_mana":
-            # Adiciona 3 mana de qualquer cor
+            # Sacrificado: adiciona 3 mana de qualquer cor (simula como mana do combo)
             for _ in range(3):
                 player.mana_pool[Color.COLORLESS] = player.mana_pool.get(Color.COLORLESS, 0) + 1
-            self._log(f"  Lotus Bloom: +3 mana")
+            self._log(f"  Lotus Bloom sacrificado: +3 mana")
         
         elif effect_name == "pact_of_negation_effect" or effect_name == "force_of_negation_effect":
             # Contra magia do oponente
@@ -549,6 +571,40 @@ class RulesEngineV2:
             # Instants vão para o cemitério após resolver (não ficam no campo)
             player.graveyard.append(card)
             self._log(f"  {card.name} foi para o cemitério")
+            
+            # Pact of Negation: registra trigger de upkeep pay-or-lose
+            if effect_name == "pact_of_negation_effect":
+                _pact_card = card
+                _pact_player = player
+                _fired = [False]  # one-shot flag
+                
+                def make_pact_trigger(p, pc, fired):
+                    def pact_upkeep_trigger(event, state):
+                        if fired[0]:
+                            return
+                        fired[0] = True
+                        # Verifica se pode pagar {3}{U}{U}
+                        pact_cost = ManaCost(generic=3, blue=2)
+                        pool = p.calculate_mana_pool()
+                        if p.cant_lose_game_this_turn:
+                            self._log(f"  Angel's Grace protegeu {p.name} do trigger do Pact of Negation")
+                        elif pact_cost.can_pay(pool):
+                            paid = pact_cost.pay(pool)
+                            p.mana_pool = paid
+                            self._log(f"  {p.name} pagou o Pact of Negation ({pact_cost})")
+                        else:
+                            state.winner = 2 if p == state.player1 else 1
+                            self._log(f"  {p.name} nao pagou o Pact of Negation e perdeu o jogo!")
+                    return pact_upkeep_trigger
+                
+                _trigger = TriggeredAbility(
+                    card=_pact_card,
+                    event_type=GameEvent.UPKEEP,
+                    condition=lambda e, f=_fired: not f[0],
+                    effect=make_pact_trigger(_pact_player, _pact_card, _fired)
+                )
+                self.trigger_manager.register_trigger(_trigger)
+                self._log(f"  Pact of Negation: trigger de upkeep registrado para {player.name}")
         
         elif effect_name == "path_to_exile_effect":
             # Exile criatura do oponente
@@ -568,23 +624,86 @@ class RulesEngineV2:
                 self._log(f"  Sleight of Hand: comprou {drawn.name}")
         
         elif effect_name == "spoils_of_the_vault_effect":
-            # Exile ate achar terreno
-            cmc_total = 0
-            while player.library:
-                exiled = player.library.pop(0)
-                player.exile.append(exiled)
-                cmc_total += getattr(exiled, 'cmc', 0)
-                if exiled.is_land:
-                    exiled.tapped = True
-                    player.battlefield.append(exiled)
-                    break
-            player.life += cmc_total
-            self.event_bus.emit_simple(GameEvent.LIFE_GAINED, source=player, data={'amount': cmc_total})
+            has_unlife = any(c.name == 'Phyrexian Unlife' for c in player.battlefield)
+            protected = player.cant_lose_game_this_turn or has_unlife
+            
+            if protected:
+                # Modo combo: nomeia carta inexistente, exila biblioteca inteira
+                life_lost = len(player.library)
+                player.exile.extend(player.library)
+                player.library.clear()
+                player.life -= life_lost
+                if life_lost > 0:
+                    self.event_bus.emit_simple(GameEvent.LIFE_LOST, source=player, data={'amount': life_lost})
+                self._log(f"  Spoils of the Vault (combo): exilou {life_lost} cartas, perdeu {life_lost} vida (vida: {player.life})")
+            else:
+                # Modo normal: busca Ad Nauseam (peca mais importante)
+                target_name = "Ad Nauseam"
+                found = False
+                lost = 0
+                while player.library:
+                    revealed = player.library.pop(0)
+                    lost += 1
+                    if revealed.name == target_name:
+                        player.hand.append(revealed)
+                        found = True
+                        self._log(f"  Spoils: encontrou {target_name} ({lost} cartas reveladas)")
+                        break
+                    else:
+                        player.exile.append(revealed)
+                if not found:
+                    self._log(f"  Spoils: nao encontrou {target_name}, exilou {lost} cartas")
+                player.life -= lost
+                if lost > 0:
+                    self.event_bus.emit_simple(GameEvent.LIFE_LOST, source=player, data={'amount': lost})
+            player.graveyard.append(card)
+        
+        elif effect_name == "pentad_prism_etb":
+            # Entra em campo com 2 marcadores de carga
+            card.charge_counters = 2
+            card.tapped = False
+            player.battlefield.append(card)
+            self.event_bus.emit_simple(GameEvent.PERMANENT_ENTERS, source=card, controller=player)
+            self._log(f"  Pentad Prism entrou com {card.charge_counters} marcadores de carga")
+        
+        elif effect_name == "pentad_prism_tap":
+            # Remove 1 marcador, adiciona 1 mana de cor mais útil
+            if card in player.battlefield and getattr(card, 'charge_counters', 0) > 0:
+                card.charge_counters -= 1
+                # Determina a cor mais necessaria na mao
+                needed_colors = {}
+                for c in player.hand:
+                    if not c.is_land and hasattr(c, 'mana_cost'):
+                        mc = c.mana_cost
+                        for color, amt in [(Color.WHITE, mc.white), (Color.BLUE, mc.blue),
+                                          (Color.BLACK, mc.black), (Color.RED, mc.red),
+                                          (Color.GREEN, mc.green)]:
+                            if amt > 0:
+                                needed_colors[color] = needed_colors.get(color, 0) + amt
+                best_color = max(needed_colors, key=needed_colors.get) if needed_colors else Color.COLORLESS
+                player.mana_pool[best_color] = player.mana_pool.get(best_color, 0) + 1
+                self._log(f"  Pentad Prism: -{1} carga, +1 {best_color.value} (restam {card.charge_counters})")
+                # Se gastou ambas as cargas, remove do campo
+                if card.charge_counters == 0:
+                    player.battlefield.remove(card)
+                    player.graveyard.append(card)
+                    self._log(f"  Pentad Prism: sem marcadores, foi para o cemiterio")
+        
+        elif effect_name == "serum_visions_effect":
+            # Draw 1 depois Scry 2
             if player.library:
                 drawn = player.library.pop(0)
                 player.hand.append(drawn)
                 self.event_bus.emit_simple(GameEvent.CARD_DRAWN, source=player)
-            self._log(f"  Spoils of the Vault: ganhou {cmc_total} vida")
+                self._log(f"  Serum Visions: comprou {drawn.name}")
+            # Scry 2: pe-shuffles top 2 (simplificado: mantem melhor no topo)
+            if len(player.library) >= 2:
+                top2 = player.library[:2]
+                # Coloca lands no fundo (Ad Nauseam quer spells no topo)
+                spells = [c for c in top2 if not c.is_land]
+                lands = [c for c in top2 if c.is_land]
+                player.library[:2] = spells + lands
+                self._log(f"  Serum Visions: scry 2 (prioriza spells)")
         
         else:
             # Efeito desconhecido, vai para o cemiterio
@@ -592,28 +711,50 @@ class RulesEngineV2:
             self._log(f"  Efeito desconhecido: {effect_name}")
     
     def _resolve_ad_nauseam(self, player: PlayerState):
-        """Resolve o efeito de Ad Nauseam."""
-        self._log("  Ad Nauseam: exilando cartas...")
-        total_cmc = 0
+        """Resolve o efeito de Ad Nauseam.
         
-        while player.library:
-            card = player.library.pop(0)
-            player.exile.append(card)
-            
-            if card.is_land:
-                continue  # Continua exilando
-            
-            # Nao-terreno encontrado
-            cmc = getattr(card, 'cmc', 0)
-            total_cmc += cmc
-            player.hand.append(card)
-            self._log(f"    Exilou {card.name} (CMC {cmc})")
-            break
+        Regra real: revela cartas do topo da biblioteca uma por uma, coloca na mao,
+        perde vida igual ao CMC. Jogador escolhe parar. IA para automaticamente
+        quando protegida (Grace/Unlife) revela o deck inteiro; sem protecao para antes
+        de chegar a 0 de vida.
+        """
+        self._log("  Ad Nauseam: revelando cartas...")
         
-        if total_cmc > 0:
+        has_unlife = any(c.name == 'Phyrexian Unlife' for c in player.battlefield)
+        protected = player.cant_lose_game_this_turn or has_unlife
+        
+        if protected:
+            # Turno do combo: revela o deck inteiro
+            total_cmc = 0
+            cards_drawn = 0
+            while player.library:
+                card = player.library.pop(0)
+                player.hand.append(card)
+                cmc = card.mana_cost.total if hasattr(card, 'mana_cost') else 0
+                total_cmc += cmc
+                cards_drawn += 1
+            
             player.life -= total_cmc
-            self.event_bus.emit_simple(GameEvent.LIFE_LOST, source=player, data={'amount': total_cmc})
-            self._log(f"    Perdeu {total_cmc} vida (total: {player.life})")
+            if total_cmc > 0:
+                self.event_bus.emit_simple(GameEvent.LIFE_LOST, source=player, data={'amount': total_cmc})
+            self._log(f"  Ad Nauseam revelou deck inteiro: {cards_drawn} cartas na mao, perdeu {total_cmc} vida (vida: {player.life})")
+        else:
+            # Sem protecao: revela ate vida chegar perto de 1
+            total_cmc = 0
+            cards_drawn = 0
+            while player.library:
+                next_card = player.library[0]
+                cmc = next_card.mana_cost.total if hasattr(next_card, 'mana_cost') else 0
+                if player.life - cmc < 1:
+                    break
+                card = player.library.pop(0)
+                player.hand.append(card)
+                player.life -= cmc
+                total_cmc += cmc
+                cards_drawn += 1
+                if cmc > 0:
+                    self.event_bus.emit_simple(GameEvent.LIFE_LOST, source=player, data={'amount': cmc})
+            self._log(f"  Ad Nauseam (sem protecao): {cards_drawn} cartas, perdeu {total_cmc} vida (vida: {player.life})")
     
     # ─────────────────────────────────────────
     # Combate

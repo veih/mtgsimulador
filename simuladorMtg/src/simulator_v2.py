@@ -103,11 +103,11 @@ class MatchSimulatorV2:
 
         # Determina vencedor
         if state.winner is not None:
-            if state.winner == 0:
-                winner_name = self.name_a
-            elif state.winner == 1:
-                winner_name = self.name_b
-            else:  # -1 = empate
+            if state.winner == 1:
+                winner_name = self.name_a   # player1 = deck_a
+            elif state.winner == 2:
+                winner_name = self.name_b   # player2 = deck_b
+            else:  # -1 = empate, 0 = nao definido
                 winner_name = "Empate"
         elif p1.life <= 0 and p2.life <= 0:
             # Ambos chegaram a 0 simultaneamente
@@ -144,6 +144,9 @@ class MatchSimulatorV2:
         if recorder:
             recorder.end_match(winner_name, turn_count)
 
+        # Salva log da ultima partida para inspecao externa
+        self.last_log = list(engine.game_log)
+
         if self.verbosity > 0:
             print(f"Partida {match_number}: {winner_name} venceu em {turn_count} turnos")
 
@@ -170,6 +173,14 @@ class MatchSimulatorV2:
 
         # Processa upkeep (para triggers de Suspend, etc.)
         engine.process_upkeep(player)
+        
+        # Gasta cargas do Pentad Prism disponivel em campo
+        for bf_card in list(player.battlefield):
+            if bf_card.name == 'Pentad Prism' and getattr(bf_card, 'charge_counters', 0) > 0:
+                while getattr(bf_card, 'charge_counters', 0) > 0:
+                    engine._resolve_card_effect('pentad_prism_tap', bf_card, player,
+                        state.player2 if player == state.player1 else state.player1)
+                break
 
         # Fase principal - IA decide o que fazer
         max_actions = 20  # Evita loop infinito

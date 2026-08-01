@@ -1,0 +1,672 @@
+{
+  "Bloodbraid Elf": {
+    "mana_cost": "{2}{R}{G}",
+    "type_line": "Creature — Elf Berserker",
+    "oracle_text": "Haste (This creature can attack and {T} as soon as it comes under your control.)\nCascade (When you cast this spell, exile cards from the top of your library until you exile a nonland card that costs less. You may cast it without paying its mana cost. Put the exiled cards on the bottom in a random order.)",
+    "power": "3",
+    "toughness": "2",
+    "keywords": [
+      "Haste",
+      "Cascade"
+    ],
+    "cmc": 4.0,
+    "colors": [
+      "G",
+      "R"
+    ]
+  },
+  "Dark Confidant": {
+    "mana_cost": "{1}{B}",
+    "type_line": "Creature — Human Wizard",
+    "oracle_text": "At the beginning of your upkeep, reveal the top card of your library and put that card into your hand. You lose life equal to its mana value.",
+    "power": "2",
+    "toughness": "1",
+    "keywords": [],
+    "cmc": 2.0,
+    "colors": [
+      "B"
+    ]
+  },
+  "Kolaghan's Command": {
+    "mana_cost": "{1}{B}{R}",
+    "type_line": "Instant",
+    "oracle_text": "Choose two —\n• Return target creature card from your graveyard to your hand.\n• Target player discards a card.\n• Destroy target artifact.\n• Kolaghan's Command deals 2 damage to any target.",
+    "power": null,
+    "toughness": null,
+    "keywords": [],
+    "cmc": 3.0,
+    "colors": [
+      "B",
+      "R"
+    ]
+  },
+  "Fatal Push": {
+    "mana_cost": "{B}",
+    "type_line": "Instant",
+    "oracle_text": "Destroy target creature if it has mana value 2 or less.\nRevolt — Destroy that creature if it has mana value 4 or less instead if a permanent left the battlefield under your control this turn.",
+    "power": null,
+    "toughness": null,
+    "keywords": [
+      "Revolt"
+    ],
+    "cmc": 1.0,
+    "colors": [
+      "B"
+    ]
+  },
+  "Inquisition of Kozilek": {
+    "mana_cost": "{B}",
+    "type_line": "Sorcery",
+    "oracle_text": "Target player reveals their hand. You choose a nonland card from it with mana value 3 or less. That player discards that card.",
+    "power": null,
+    "toughness": null,
+    "keywords": [],
+    "cmc": 1.0,
+    "colors": [
+      "B"
+    ]
+  },
+  "Wrenn and Six": {
+    "mana_cost": "{R}{G}",
+    "type_line": "Legendary Planeswalker — Wrenn",
+    "oracle_text": "+1: Return up to one target land card from your graveyard to your hand.\n−1: Wrenn and Six deals 1 damage to any target.\n−7: You get an emblem with \"Instant and sorcery cards in your graveyard have retrace.\" (You may cast instant and sorcery cards from your graveyard by discarding a land card in addition to paying their other costs.)",
+    "power": null,
+    "toughness": null,
+    "keywords": [],
+    "cmc": 2.0,
+    "colors": [
+      "G",
+      "R"
+    ]
+  },
+  "Liliana of the Veil": {
+    "mana_cost": "{1}{B}{B}",
+    "type_line": "Legendary Planeswalker — Liliana",
+    "oracle_text": "+1: Each player discards a card.\n−2: Target player sacrifices a creature.\n−6: Separate all permanents target player controls into two piles. That player sacrifices all permanents in the pile of their choice.",
+    "power": null,
+    "toughness": null,
+    "keywords": [],
+    "cmc": 3.0,
+    "colors": [
+      "B"
+    ]
+  },
+  "Blood Crypt": {
+    "mana_cost": "",
+    "type_line": "Land — Swamp Mountain",
+    "oracle_text": "({T}: Add {B} or {R}.)\nAs this land enters, you may pay 2 life. If you don't, it enters tapped.",
+    "power": null,
+    "toughness": null,
+    "keywords": [],
+    "cmc": 0.0,
+    "colors": []
+  },
+  "Overgrown Tomb": {
+    "mana_cost": "",
+    "type_line": "Land — Swamp Forest",
+    "oracle_text": "({T}: Add {B} or {G}.)\nAs this land enters, you may pay 2 life. If you don't, it enters tapped.",
+    "power": null,
+    "toughness": null,
+    "keywords": [],
+    "cmc": 0.0,
+    "colors": []
+  },
+  "Stomping Ground": {
+    "mana_cost": "",
+    "type_line": "Land — Mountain Forest",
+    "oracle_text": "({T}: Add {R} or {G}.)\nAs this land enters, you may pay 2 life. If you don't, it enters tapped.",
+    "power": null,
+    "toughness": null,
+    "keywords": [],
+    "cmc": 0.0,
+    "colors": []
+  },
+  "Murktide Regent": {
+    "mana_cost": "{5}{U}{U}",
+    "type_line": "Creature — Dragon",
+    "oracle_text": "Delve (Each card you exile from your graveyard while casting this spell pays for {1}.)\nFlying\nThis creature enters with a +1/+1 counter on it for each instant and sorcery card exiled with it.\nWhenever an instant or sorcery card leaves your graveyard, put a +1/+1 counter on this creature.",
+    "power": "3",
+    "toughness": "3",
+    "keywords": [
+      "Flying",
+      "Delve"
+    ],
+    "cmc": 7.0,
+    "colors": [
+      "U"
+    ]
+  },
+  "Ragavan, Nimble Pilferer": {
+    "mana_cost": "{R}",
+    "type_line": "Legendary Creature — Monkey Pirate",
+    "oracle_text": "Whenever Ragavan deals combat damage to a player, create a Treasure token and exile the top card of that player's library. Until end of turn, you may cast that card.\nDash {1}{R} (You may cast this spell for its dash cost. If you do, it gains haste, and it's returned from the battlefield to its owner's hand at the beginning of the next end step.)",
+    "power": "2",
+    "toughness": "1",
+    "keywords": [
+      "Treasure",
+      "Dash"
+    ],
+    "cmc": 1.0,
+    "colors": [
+      "R"
+    ]
+  },
+  "Dragon's Rage Channeler": {
+    "mana_cost": "{R}",
+    "type_line": "Creature — Human Shaman",
+    "oracle_text": "Whenever you cast a noncreature spell, surveil 1. (Look at the top card of your library. You may put that card into your graveyard.)\nDelirium — As long as there are four or more card types among cards in your graveyard, this creature gets +2/+2, has flying, and attacks each combat if able.",
+    "power": "1",
+    "toughness": "1",
+    "keywords": [
+      "Delirium",
+      "Surveil"
+    ],
+    "cmc": 1.0,
+    "colors": [
+      "R"
+    ]
+  },
+  "Expressive Iteration": {
+    "mana_cost": "{U}{R}",
+    "type_line": "Sorcery",
+    "oracle_text": "Look at the top three cards of your library. Put one of them into your hand, put one of them on the bottom of your library, and exile one of them. You may play the exiled card this turn.",
+    "power": null,
+    "toughness": null,
+    "keywords": [],
+    "cmc": 2.0,
+    "colors": [
+      "R",
+      "U"
+    ]
+  },
+  "Spell Snare": {
+    "mana_cost": "{U}",
+    "type_line": "Instant",
+    "oracle_text": "Counter target spell with mana value 2.",
+    "power": null,
+    "toughness": null,
+    "keywords": [],
+    "cmc": 1.0,
+    "colors": [
+      "U"
+    ]
+  },
+  "Unholy Heat": {
+    "mana_cost": "{R}",
+    "type_line": "Instant",
+    "oracle_text": "Unholy Heat deals 2 damage to target creature or planeswalker.\nDelirium — Unholy Heat deals 6 damage instead if there are four or more card types among cards in your graveyard.",
+    "power": null,
+    "toughness": null,
+    "keywords": [
+      "Delirium"
+    ],
+    "cmc": 1.0,
+    "colors": [
+      "R"
+    ]
+  },
+  "Thought Scour": {
+    "mana_cost": "{U}",
+    "type_line": "Instant",
+    "oracle_text": "Target player mills two cards.\nDraw a card.",
+    "power": null,
+    "toughness": null,
+    "keywords": [
+      "Mill"
+    ],
+    "cmc": 1.0,
+    "colors": [
+      "U"
+    ]
+  },
+  "Steam Vents": {
+    "mana_cost": "",
+    "type_line": "Land — Island Mountain",
+    "oracle_text": "({T}: Add {U} or {R}.)\nAs this land enters, you may pay 2 life. If you don't, it enters tapped.",
+    "power": null,
+    "toughness": null,
+    "keywords": [],
+    "cmc": 0.0,
+    "colors": []
+  },
+  "Scalding Tarn": {
+    "mana_cost": "",
+    "type_line": "Land",
+    "oracle_text": "{T}, Pay 1 life, Sacrifice this land: Search your library for an Island or Mountain card, put it onto the battlefield, then shuffle.",
+    "power": null,
+    "toughness": null,
+    "keywords": [],
+    "cmc": 0.0,
+    "colors": []
+  },
+  "Spirebluff Canal": {
+    "mana_cost": "",
+    "type_line": "Land",
+    "oracle_text": "This land enters tapped unless you control two or fewer other lands.\n{T}: Add {U} or {R}.",
+    "power": null,
+    "toughness": null,
+    "keywords": [],
+    "cmc": 0.0,
+    "colors": []
+  },
+  "Hollow One": {
+    "mana_cost": "{5}",
+    "type_line": "Artifact Creature — Golem",
+    "oracle_text": "This spell costs {2} less to cast for each card you've cycled or discarded this turn.\nCycling {2} ({2}, Discard this card: Draw a card.)",
+    "power": "4",
+    "toughness": "4",
+    "keywords": [
+      "Cycling"
+    ],
+    "cmc": 5.0,
+    "colors": []
+  },
+  "Goblin Charbelcher": {
+    "mana_cost": "{4}",
+    "type_line": "Artifact",
+    "oracle_text": "{3}, {T}: Reveal cards from the top of your library until you reveal a land card. This artifact deals damage equal to the number of nonland cards revealed this way to any target. If the revealed land card was a Mountain, this artifact deals double that damage instead. Put the revealed cards on the bottom of your library in any order.",
+    "power": null,
+    "toughness": null,
+    "keywords": [
+      "Double"
+    ],
+    "cmc": 4.0,
+    "colors": []
+  },
+  "Flame Slash": {
+    "mana_cost": "{R}",
+    "type_line": "Sorcery",
+    "oracle_text": "Flame Slash deals 4 damage to target creature.",
+    "power": null,
+    "toughness": null,
+    "keywords": [],
+    "cmc": 1.0,
+    "colors": [
+      "R"
+    ]
+  },
+  "Faithless Looting": {
+    "mana_cost": "{R}",
+    "type_line": "Sorcery",
+    "oracle_text": "Draw two cards, then discard two cards.\nFlashback {2}{R} (You may cast this card from your graveyard for its flashback cost. Then exile it.)",
+    "power": null,
+    "toughness": null,
+    "keywords": [
+      "Flashback"
+    ],
+    "cmc": 1.0,
+    "colors": [
+      "R"
+    ]
+  },
+  "Gurmag Angler": {
+    "mana_cost": "{6}{B}",
+    "type_line": "Creature — Zombie Fish",
+    "oracle_text": "Delve (Each card you exile from your graveyard while casting this spell pays for {1}.)",
+    "power": "5",
+    "toughness": "5",
+    "keywords": [
+      "Delve"
+    ],
+    "cmc": 7.0,
+    "colors": [
+      "B"
+    ]
+  },
+  "Merciless Executioner": {
+    "mana_cost": "{2}{B}",
+    "type_line": "Creature — Orc Warrior",
+    "oracle_text": "When this creature enters, each player sacrifices a creature of their choice.",
+    "power": "3",
+    "toughness": "1",
+    "keywords": [],
+    "cmc": 3.0,
+    "colors": [
+      "B"
+    ]
+  },
+  "Dread Return": {
+    "mana_cost": "{2}{B}{B}",
+    "type_line": "Sorcery",
+    "oracle_text": "Return target creature card from your graveyard to the battlefield.\nFlashback—Sacrifice three creatures. (You may cast this card from your graveyard for its flashback cost. Then exile it.)",
+    "power": null,
+    "toughness": null,
+    "keywords": [
+      "Flashback"
+    ],
+    "cmc": 4.0,
+    "colors": [
+      "B"
+    ]
+  },
+  "Vengevine": {
+    "mana_cost": "{2}{G}{G}",
+    "type_line": "Creature — Elemental",
+    "oracle_text": "Haste\nWhenever you cast a spell, if it's the second creature spell you cast this turn, you may return this card from your graveyard to the battlefield.",
+    "power": "4",
+    "toughness": "3",
+    "keywords": [
+      "Haste"
+    ],
+    "cmc": 4.0,
+    "colors": [
+      "G"
+    ]
+  },
+  "Bazaar of Baghdad": {
+    "mana_cost": "",
+    "type_line": "Land",
+    "oracle_text": "{T}: Draw two cards, then discard three cards.",
+    "power": null,
+    "toughness": null,
+    "keywords": [],
+    "cmc": 0.0,
+    "colors": []
+  },
+  "Bloodghast": {
+    "mana_cost": "{B}{B}",
+    "type_line": "Creature — Vampire Spirit",
+    "oracle_text": "This creature can't block.\nThis creature has haste as long as an opponent has 10 or less life.\nLandfall — Whenever a land you control enters, you may return this card from your graveyard to the battlefield.",
+    "power": "2",
+    "toughness": "1",
+    "keywords": [
+      "Landfall"
+    ],
+    "cmc": 2.0,
+    "colors": [
+      "B"
+    ]
+  },
+  "Bridge from Below": {
+    "mana_cost": "{B}{B}{B}",
+    "type_line": "Enchantment",
+    "oracle_text": "Whenever a nontoken creature is put into your graveyard from the battlefield, if this card is in your graveyard, create a 2/2 black Zombie creature token.\nWhen a creature is put into an opponent's graveyard from the battlefield, if this card is in your graveyard, exile this card.",
+    "power": null,
+    "toughness": null,
+    "keywords": [],
+    "cmc": 3.0,
+    "colors": [
+      "B"
+    ]
+  },
+  "Blackcleave Cliffs": {
+    "mana_cost": "",
+    "type_line": "Land",
+    "oracle_text": "This land enters tapped unless you control two or fewer other lands.\n{T}: Add {B} or {R}.",
+    "power": null,
+    "toughness": null,
+    "keywords": [],
+    "cmc": 0.0,
+    "colors": []
+  },
+  "Bloodstained Mire": {
+    "mana_cost": "",
+    "type_line": "Land",
+    "oracle_text": "{T}, Pay 1 life, Sacrifice this land: Search your library for a Swamp or Mountain card, put it onto the battlefield, then shuffle.",
+    "power": null,
+    "toughness": null,
+    "keywords": [],
+    "cmc": 0.0,
+    "colors": []
+  },
+  "Stirling Castle": null,
+  "Monastery Swiftspear": {
+    "mana_cost": "{R}",
+    "type_line": "Creature — Human Monk",
+    "oracle_text": "Haste\nProwess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)",
+    "power": "1",
+    "toughness": "2",
+    "keywords": [
+      "Prowess",
+      "Haste"
+    ],
+    "cmc": 1.0,
+    "colors": [
+      "R"
+    ]
+  },
+  "Soul-Scar Mage": {
+    "mana_cost": "{R}",
+    "type_line": "Creature — Human Wizard",
+    "oracle_text": "Prowess\nIf a source you control would deal noncombat damage to a creature an opponent controls, put that many -1/-1 counters on that creature instead.",
+    "power": "1",
+    "toughness": "2",
+    "keywords": [
+      "Prowess"
+    ],
+    "cmc": 1.0,
+    "colors": [
+      "R"
+    ]
+  },
+  "Eidolon of the Great Revel": {
+    "mana_cost": "{R}{R}",
+    "type_line": "Enchantment Creature — Spirit",
+    "oracle_text": "Whenever a player casts a spell with mana value 3 or less, this creature deals 2 damage to that player.",
+    "power": "2",
+    "toughness": "2",
+    "keywords": [],
+    "cmc": 2.0,
+    "colors": [
+      "R"
+    ]
+  },
+  "Lava Dart": {
+    "mana_cost": "{R}",
+    "type_line": "Instant",
+    "oracle_text": "Lava Dart deals 1 damage to any target.\nFlashback—Sacrifice a Mountain. (You may cast this card from your graveyard for its flashback cost. Then exile it.)",
+    "power": null,
+    "toughness": null,
+    "keywords": [
+      "Flashback"
+    ],
+    "cmc": 1.0,
+    "colors": [
+      "R"
+    ]
+  },
+  "Rift Bolt": {
+    "mana_cost": "{2}{R}",
+    "type_line": "Sorcery",
+    "oracle_text": "Rift Bolt deals 3 damage to any target.\nSuspend 1—{R} (Rather than cast this card from your hand, you may pay {R} and exile it with a time counter on it. At the beginning of your upkeep, remove a time counter. When the last is removed, you may cast it without paying its mana cost.)",
+    "power": null,
+    "toughness": null,
+    "keywords": [
+      "Suspend"
+    ],
+    "cmc": 3.0,
+    "colors": [
+      "R"
+    ]
+  },
+  "Burst Lightning": {
+    "mana_cost": "{R}",
+    "type_line": "Instant",
+    "oracle_text": "Kicker {4} (You may pay an additional {4} as you cast this spell.)\nBurst Lightning deals 2 damage to any target. If this spell was kicked, it deals 4 damage instead.",
+    "power": null,
+    "toughness": null,
+    "keywords": [
+      "Kicker"
+    ],
+    "cmc": 1.0,
+    "colors": [
+      "R"
+    ]
+  },
+  "Mishra's Bauble": {
+    "mana_cost": "{0}",
+    "type_line": "Artifact",
+    "oracle_text": "{T}, Sacrifice this artifact: Look at the top card of target player's library. Draw a card at the beginning of the next turn's upkeep.",
+    "power": null,
+    "toughness": null,
+    "keywords": [],
+    "cmc": 0.0,
+    "colors": []
+  },
+  "Sacred Foundry": {
+    "mana_cost": "",
+    "type_line": "Land — Mountain Plains",
+    "oracle_text": "({T}: Add {R} or {W}.)\nAs this land enters, you may pay 2 life. If you don't, it enters tapped.",
+    "power": null,
+    "toughness": null,
+    "keywords": [],
+    "cmc": 0.0,
+    "colors": []
+  },
+  "Death's Shadow": {
+    "mana_cost": "{B}",
+    "type_line": "Creature — Avatar",
+    "oracle_text": "This creature gets -X/-X, where X is your life total.",
+    "power": "13",
+    "toughness": "13",
+    "keywords": [],
+    "cmc": 1.0,
+    "colors": [
+      "B"
+    ]
+  },
+  "Temur Battle Rage": {
+    "mana_cost": "{1}{R}",
+    "type_line": "Instant",
+    "oracle_text": "Target creature gains double strike until end of turn.\nFerocious — That creature also gains trample until end of turn if you control a creature with power 4 or greater.",
+    "power": null,
+    "toughness": null,
+    "keywords": [
+      "Ferocious"
+    ],
+    "cmc": 2.0,
+    "colors": [
+      "R"
+    ]
+  },
+  "Daze": {
+    "mana_cost": "{1}{U}",
+    "type_line": "Instant",
+    "oracle_text": "You may return an Island you control to its owner's hand rather than pay this spell's mana cost.\nCounter target spell unless its controller pays {1}.",
+    "power": null,
+    "toughness": null,
+    "keywords": [],
+    "cmc": 2.0,
+    "colors": [
+      "U"
+    ]
+  },
+  "Delirium Skeins": {
+    "mana_cost": "{2}{B}",
+    "type_line": "Sorcery",
+    "oracle_text": "Each player discards three cards.",
+    "power": null,
+    "toughness": null,
+    "keywords": [],
+    "cmc": 3.0,
+    "colors": [
+      "B"
+    ]
+  },
+  "Street Wraith": {
+    "mana_cost": "{3}{B}{B}",
+    "type_line": "Creature — Wraith",
+    "oracle_text": "Swampwalk (This creature can't be blocked as long as defending player controls a Swamp.)\nCycling—Pay 2 life. (Pay 2 life, Discard this card: Draw a card.)",
+    "power": "3",
+    "toughness": "4",
+    "keywords": [
+      "Landwalk",
+      "Swampwalk",
+      "Cycling"
+    ],
+    "cmc": 5.0,
+    "colors": [
+      "B"
+    ]
+  },
+  "Karn Liberated": {
+    "mana_cost": "{7}",
+    "type_line": "Legendary Planeswalker — Karn",
+    "oracle_text": "+4: Target player exiles a card from their hand.\n−3: Exile target permanent.\n−14: Restart the game, leaving in exile all non-Aura permanent cards exiled with Karn. Then put those cards onto the battlefield under your control.",
+    "power": null,
+    "toughness": null,
+    "keywords": [],
+    "cmc": 7.0,
+    "colors": []
+  },
+  "Chromatic Star": {
+    "mana_cost": "{1}",
+    "type_line": "Artifact",
+    "oracle_text": "{1}, {T}, Sacrifice this artifact: Add one mana of any color.\nWhen this artifact is put into a graveyard from the battlefield, draw a card.",
+    "power": null,
+    "toughness": null,
+    "keywords": [],
+    "cmc": 1.0,
+    "colors": []
+  },
+  "Chromatic Sphere": {
+    "mana_cost": "{1}",
+    "type_line": "Artifact",
+    "oracle_text": "{1}, {T}, Sacrifice this artifact: Add one mana of any color. Draw a card.",
+    "power": null,
+    "toughness": null,
+    "keywords": [],
+    "cmc": 1.0,
+    "colors": []
+  },
+  "Oblivion Stone": {
+    "mana_cost": "{3}",
+    "type_line": "Artifact",
+    "oracle_text": "{4}, {T}: Put a fate counter on target permanent.\n{5}, {T}, Sacrifice this artifact: Destroy each nonland permanent without a fate counter on it, then remove all fate counters from all permanents.",
+    "power": null,
+    "toughness": null,
+    "keywords": [],
+    "cmc": 3.0,
+    "colors": []
+  },
+  "Mindslaver": {
+    "mana_cost": "{6}",
+    "type_line": "Legendary Artifact",
+    "oracle_text": "{4}, {T}, Sacrifice Mindslaver: You control target player during that player's next turn. (You see all cards that player could see and make all decisions for them.)",
+    "power": null,
+    "toughness": null,
+    "keywords": [],
+    "cmc": 6.0,
+    "colors": []
+  },
+  "Urza's Mine": {
+    "mana_cost": "",
+    "type_line": "Land — Urza's Mine",
+    "oracle_text": "{T}: Add {C}. If you control an Urza's Power-Plant and an Urza's Tower, add {C}{C} instead.",
+    "power": null,
+    "toughness": null,
+    "keywords": [],
+    "cmc": 0.0,
+    "colors": []
+  },
+  "Urza's Power Plant": {
+    "mana_cost": "",
+    "type_line": "Land — Urza's Power-Plant",
+    "oracle_text": "{T}: Add {C}. If you control an Urza's Mine and an Urza's Tower, add {C}{C} instead.",
+    "power": null,
+    "toughness": null,
+    "keywords": [],
+    "cmc": 0.0,
+    "colors": []
+  },
+  "Urza's Tower": {
+    "mana_cost": "",
+    "type_line": "Land — Urza's Tower",
+    "oracle_text": "{T}: Add {C}. If you control an Urza's Mine and an Urza's Power-Plant, add {C}{C}{C} instead.",
+    "power": null,
+    "toughness": null,
+    "keywords": [],
+    "cmc": 0.0,
+    "colors": []
+  },
+  "Wastes": {
+    "mana_cost": "",
+    "type_line": "Basic Land",
+    "oracle_text": "{T}: Add {C}.",
+    "power": null,
+    "toughness": null,
+    "keywords": [],
+    "cmc": 0.0,
+    "colors": []
+  }
+}

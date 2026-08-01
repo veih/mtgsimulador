@@ -493,6 +493,390 @@ DARKSLICK_SHORES = _dual_land("Darkslick Shores", {Color.BLUE, Color.BLACK})
 GEMSTONE_MINE = _utility_land("Gemstone Mine", {Color.WHITE, Color.BLUE, Color.BLACK, Color.RED, Color.GREEN}, "gemstone_mine", "Tap: Add one mana of any color. Remove a mining counter.")
 OTAWARA = _utility_land("Otawara, Soaring City", {Color.BLUE}, "otawara_soaring_city", "Tap: Add {U}. Channel — {X}{U}{U}: Return up to one target artifact, creature, enchantment, or planeswalker to its owner's hand.")
 
+# Shocklands — Jund
+BLOOD_CRYPT = _dual_land("Blood Crypt", {Color.BLACK, Color.RED}, "As this land enters, you may pay 2 life. If you don't, it enters tapped. {T}: Add {B} or {R}.")
+OVERGROWN_TOMB = _dual_land("Overgrown Tomb", {Color.BLACK, Color.GREEN}, "As this land enters, you may pay 2 life. If you don't, it enters tapped. {T}: Add {B} or {G}.")
+STOMPING_GROUND = _dual_land("Stomping Ground", {Color.RED, Color.GREEN}, "As this land enters, you may pay 2 life. If you don't, it enters tapped. {T}: Add {R} or {G}.")
+# Shocklands — Izzet Murktide
+STEAM_VENTS = _dual_land("Steam Vents", {Color.BLUE, Color.RED}, "As this land enters, you may pay 2 life. If you don't, it enters tapped. {T}: Add {U} or {R}.")
+SACRED_FOUNDRY = _dual_land("Sacred Foundry", {Color.RED, Color.WHITE}, "As this land enters, you may pay 2 life. If you don't, it enters tapped. {T}: Add {R} or {W}.")
+# Fetchlands
+SCALDING_TARN = _utility_land("Scalding Tarn", {Color.BLUE, Color.RED}, "scalding_tarn", "{T}, Pay 1 life, Sacrifice: Search library for Island or Mountain, put it onto battlefield, then shuffle.")
+BLOODSTAINED_MIRE = _utility_land("Bloodstained Mire", {Color.BLACK, Color.RED}, "bloodstained_mire", "{T}, Pay 1 life, Sacrifice: Search library for Swamp or Mountain, put it onto battlefield, then shuffle.")
+# Fast lands
+SPIREBLUFF_CANAL = _dual_land("Spirebluff Canal", {Color.BLUE, Color.RED}, "Enters tapped unless you control two or fewer other lands. {T}: Add {U} or {R}.")
+BLACKCLEAVE_CLIFFS = _dual_land("Blackcleave Cliffs", {Color.BLACK, Color.RED}, "Enters tapped unless you control two or fewer other lands. {T}: Add {B} or {R}.")
+# Utility lands
+BAZAAR_OF_BAGHDAD = _utility_land("Bazaar of Baghdad", {Color.COLORLESS}, "bazaar_of_baghdad", "{T}: Draw two cards, then discard three cards.")
+WASTES = _utility_land("Wastes", {Color.COLORLESS}, "wastes", "{T}: Add {C}.")
+# Tron lands
+URZAS_MINE = _utility_land("Urza's Mine", {Color.COLORLESS}, "urzas_mine", "{T}: Add {C}. If you control Urza's Power-Plant and Urza's Tower, add {C}{C} instead.")
+URZAS_POWER_PLANT = _utility_land("Urza's Power Plant", {Color.COLORLESS}, "urzas_power_plant", "{T}: Add {C}. If you control Urza's Mine and Urza's Tower, add {C}{C} instead.")
+URZAS_TOWER = _utility_land("Urza's Tower", {Color.COLORLESS}, "urzas_tower", "{T}: Add {C}. If you control Urza's Mine and Urza's Power-Plant, add {C}{C}{C} instead.")
+
+
+# ─────────────────────────────────────────────
+# Jund
+# ─────────────────────────────────────────────
+
+BLOODBRAID_ELF = Card(
+    id="bloodbraid_elf", name="Bloodbraid Elf",
+    mana_cost=ManaCost(red=1, green=1, generic=2), card_type=CardType.CREATURE,
+    colors={Color.RED, Color.GREEN},
+    text="Haste. Cascade.",
+    power=3, toughness=2, keywords=[Keyword.HASTE]
+)
+
+DARK_CONFIDANT = Card(
+    id="dark_confidant", name="Dark Confidant",
+    mana_cost=ManaCost(black=1, generic=1), card_type=CardType.CREATURE,
+    colors={Color.BLACK},
+    text="At the beginning of your upkeep, reveal the top card of your library and put that card into your hand. You lose life equal to its mana value.",
+    power=2, toughness=1
+)
+
+KOLAGHANS_COMMAND = Card(
+    id="kolahans_command", name="Kolaghan's Command",
+    mana_cost=ManaCost(black=1, red=1, generic=1), card_type=CardType.INSTANT,
+    colors={Color.BLACK, Color.RED},
+    text="Choose two — Return target creature from graveyard to hand; target player discards a card; destroy target artifact; deal 2 damage to any target.",
+    effects=[SpellEffect(EffectType.DAMAGE, 2, target_type=TargetType.CREATURE_OR_PLAYER)]
+)
+
+FATAL_PUSH = Card(
+    id="fatal_push", name="Fatal Push",
+    mana_cost=ManaCost(black=1), card_type=CardType.INSTANT,
+    colors={Color.BLACK},
+    text="Destroy target creature if it has mana value 2 or less. Revolt — Destroy that creature if it has mana value 4 or less instead.",
+    effects=[SpellEffect(EffectType.DESTROY_CREATURE, target_type=TargetType.CREATURE)]
+)
+
+INQUISITION_OF_KOZILEK = Card(
+    id="inquisition_of_kozilek", name="Inquisition of Kozilek",
+    mana_cost=ManaCost(black=1), card_type=CardType.SORCERY,
+    colors={Color.BLACK},
+    text="Target player reveals their hand. You choose a nonland card from it with mana value 3 or less. That player discards that card.",
+    effects=[]
+)
+
+WRENN_AND_SIX = Card(
+    id="wrenn_and_six", name="Wrenn and Six",
+    mana_cost=ManaCost(red=1, green=1), card_type=CardType.PLANESWALKER,
+    colors={Color.RED, Color.GREEN},
+    text="+1: Return up to one target land card from your graveyard to your hand. −1: Deals 1 damage to any target. −7: Instant and sorcery cards in your graveyard have retrace.",
+    effects=[]
+)
+
+LILIANA_OF_THE_VEIL = Card(
+    id="liliana_of_the_veil", name="Liliana of the Veil",
+    mana_cost=ManaCost(black=2, generic=1), card_type=CardType.PLANESWALKER,
+    colors={Color.BLACK},
+    text="+1: Each player discards a card. −2: Target player sacrifices a creature. −6: Separate all permanents target player controls into two piles. That player sacrifices all permanents in the pile of their choice.",
+    effects=[]
+)
+
+
+# ─────────────────────────────────────────────
+# Izzet Murktide
+# ─────────────────────────────────────────────
+
+MURKTIDE_REGENT = Card(
+    id="murktide_regent", name="Murktide Regent",
+    mana_cost=ManaCost(blue=2, generic=5), card_type=CardType.CREATURE,
+    colors={Color.BLUE},
+    text="Delve. Flying. Enters with a +1/+1 counter for each instant/sorcery exiled with it. Whenever an instant or sorcery leaves your graveyard, put a +1/+1 counter on this.",
+    power=3, toughness=3, keywords=[Keyword.FLYING]
+)
+
+RAGAVAN = Card(
+    id="ragavan_nimble_pilferer", name="Ragavan, Nimble Pilferer",
+    mana_cost=ManaCost(red=1), card_type=CardType.CREATURE,
+    colors={Color.RED},
+    text="Whenever Ragavan deals combat damage to a player, create a Treasure token and exile the top card of that player's library. Dash {1}{R}.",
+    power=2, toughness=1, keywords=[Keyword.HASTE]
+)
+
+DRAGONS_RAGE_CHANNELER = Card(
+    id="dragons_rage_channeler", name="Dragon's Rage Channeler",
+    mana_cost=ManaCost(red=1), card_type=CardType.CREATURE,
+    colors={Color.RED},
+    text="Whenever you cast a noncreature spell, surveil 1. Delirium — As long as there are four or more card types in your graveyard, gets +2/+2, has flying, and attacks each combat if able.",
+    power=1, toughness=1
+)
+
+EXPRESSIVE_ITERATION = Card(
+    id="expressive_iteration", name="Expressive Iteration",
+    mana_cost=ManaCost(blue=1, red=1), card_type=CardType.SORCERY,
+    colors={Color.BLUE, Color.RED},
+    text="Look at the top three cards of your library. Put one into your hand, one on the bottom, and exile one. You may play the exiled card this turn.",
+    effects=[SpellEffect(EffectType.DRAW_CARD, 1)]
+)
+
+SPELL_SNARE = Card(
+    id="spell_snare", name="Spell Snare",
+    mana_cost=ManaCost(blue=1), card_type=CardType.INSTANT,
+    colors={Color.BLUE},
+    text="Counter target spell with mana value 2.",
+    effects=[SpellEffect(EffectType.COUNTER)]
+)
+
+UNHOLY_HEAT = Card(
+    id="unholy_heat", name="Unholy Heat",
+    mana_cost=ManaCost(red=1), card_type=CardType.INSTANT,
+    colors={Color.RED},
+    text="Unholy Heat deals 2 damage to target creature or planeswalker. Delirium — 6 damage instead.",
+    effects=[SpellEffect(EffectType.DAMAGE, 2, target_type=TargetType.CREATURE)]
+)
+
+THOUGHT_SCOUR = Card(
+    id="thought_scour", name="Thought Scour",
+    mana_cost=ManaCost(blue=1), card_type=CardType.INSTANT,
+    colors={Color.BLUE},
+    text="Target player mills two cards. Draw a card.",
+    effects=[SpellEffect(EffectType.DRAW_CARD, 1)]
+)
+
+
+# ─────────────────────────────────────────────
+# Hollow One
+# ─────────────────────────────────────────────
+
+HOLLOW_ONE = Card(
+    id="hollow_one", name="Hollow One",
+    mana_cost=ManaCost(generic=5), card_type=CardType.CREATURE,
+    colors=set(),
+    text="Costs {2} less for each card you've cycled or discarded this turn. Cycling {2}.",
+    power=4, toughness=4
+)
+
+GOBLIN_CHARBELCHER = Card(
+    id="goblin_charbelcher", name="Goblin Charbelcher",
+    mana_cost=ManaCost(generic=4), card_type=CardType.ARTIFACT,
+    colors=set(),
+    text="{3}, {T}: Reveal cards from the top of your library until you reveal a land. Deal damage equal to nonland cards revealed. Put them on the bottom.",
+    effects=[SpellEffect(EffectType.DAMAGE, 5, target_type=TargetType.CREATURE_OR_PLAYER)]
+)
+
+FLAME_SLASH = Card(
+    id="flame_slash", name="Flame Slash",
+    mana_cost=ManaCost(red=1), card_type=CardType.SORCERY,
+    colors={Color.RED},
+    text="Flame Slash deals 4 damage to target creature.",
+    effects=[SpellEffect(EffectType.DAMAGE, 4, target_type=TargetType.CREATURE)]
+)
+
+FAITHLESS_LOOTING = Card(
+    id="faithless_looting", name="Faithless Looting",
+    mana_cost=ManaCost(red=1), card_type=CardType.SORCERY,
+    colors={Color.RED},
+    text="Draw two cards, then discard two cards. Flashback {2}{R}.",
+    effects=[SpellEffect(EffectType.DRAW_CARD, 2)]
+)
+
+GURMAG_ANGLER = Card(
+    id="gurmag_angler", name="Gurmag Angler",
+    mana_cost=ManaCost(black=1, generic=6), card_type=CardType.CREATURE,
+    colors={Color.BLACK},
+    text="Delve.",
+    power=5, toughness=5
+)
+
+MERCILESS_EXECUTIONER = Card(
+    id="merciless_executioner", name="Merciless Executioner",
+    mana_cost=ManaCost(black=1, generic=2), card_type=CardType.CREATURE,
+    colors={Color.BLACK},
+    text="When this creature enters, each player sacrifices a creature.",
+    power=3, toughness=1
+)
+
+DREAD_RETURN = Card(
+    id="dread_return", name="Dread Return",
+    mana_cost=ManaCost(black=2, generic=2), card_type=CardType.SORCERY,
+    colors={Color.BLACK},
+    text="Return target creature card from your graveyard to the battlefield. Flashback — Sacrifice three creatures.",
+    effects=[]
+)
+
+VENGEVINE = Card(
+    id="vengevine", name="Vengevine",
+    mana_cost=ManaCost(green=2, generic=2), card_type=CardType.CREATURE,
+    colors={Color.GREEN},
+    text="Haste. Whenever you cast a spell, if it's the second creature spell you cast this turn, you may return this from your graveyard to the battlefield.",
+    power=4, toughness=3, keywords=[Keyword.HASTE]
+)
+
+BLOODGHAST = Card(
+    id="bloodghast", name="Bloodghast",
+    mana_cost=ManaCost(black=2), card_type=CardType.CREATURE,
+    colors={Color.BLACK},
+    text="Can't block. Has haste if opponent has 10 or less life. Landfall — Return from graveyard to battlefield.",
+    power=2, toughness=1
+)
+
+BRIDGE_FROM_BELOW = Card(
+    id="bridge_from_below", name="Bridge from Below",
+    mana_cost=ManaCost(black=3), card_type=CardType.ENCHANTMENT,
+    colors={Color.BLACK},
+    text="Whenever a nontoken creature is put into your graveyard from the battlefield, if this card is in your graveyard, create a 2/2 black Zombie token.",
+    effects=[]
+)
+
+
+# ─────────────────────────────────────────────
+# Prowess
+# ─────────────────────────────────────────────
+
+MONASTERY_SWIFTSPEAR = Card(
+    id="monastery_swiftspear", name="Monastery Swiftspear",
+    mana_cost=ManaCost(red=1), card_type=CardType.CREATURE,
+    colors={Color.RED},
+    text="Haste. Prowess (whenever you cast a noncreature spell, +1/+1 until end of turn).",
+    power=1, toughness=2, keywords=[Keyword.HASTE]
+)
+
+SOUL_SCAR_MAGE = Card(
+    id="soulscar_mage", name="Soul-Scar Mage",
+    mana_cost=ManaCost(red=1), card_type=CardType.CREATURE,
+    colors={Color.RED},
+    text="Prowess. If a source you control would deal noncombat damage to a creature an opponent controls, put that many -1/-1 counters on it instead.",
+    power=1, toughness=2
+)
+
+EIDOLON_OF_THE_GREAT_REVEL = Card(
+    id="eidolon_of_the_great_revel", name="Eidolon of the Great Revel",
+    mana_cost=ManaCost(red=2), card_type=CardType.CREATURE,
+    colors={Color.RED},
+    text="Whenever a player casts a spell with mana value 3 or less, this creature deals 2 damage to that player.",
+    power=2, toughness=2
+)
+
+LAVA_DART = Card(
+    id="lava_dart", name="Lava Dart",
+    mana_cost=ManaCost(red=1), card_type=CardType.INSTANT,
+    colors={Color.RED},
+    text="Lava Dart deals 1 damage to any target. Flashback — Sacrifice a Mountain.",
+    effects=[SpellEffect(EffectType.DAMAGE, 1, target_type=TargetType.CREATURE_OR_PLAYER)]
+)
+
+RIFT_BOLT = Card(
+    id="rift_bolt", name="Rift Bolt",
+    mana_cost=ManaCost(red=1, generic=2), card_type=CardType.SORCERY,
+    colors={Color.RED},
+    text="Rift Bolt deals 3 damage to any target. Suspend 1 — {R}.",
+    effects=[SpellEffect(EffectType.DAMAGE, 3, target_type=TargetType.CREATURE_OR_PLAYER)]
+)
+
+BURST_LIGHTNING = Card(
+    id="burst_lightning", name="Burst Lightning",
+    mana_cost=ManaCost(red=1), card_type=CardType.INSTANT,
+    colors={Color.RED},
+    text="Burst Lightning deals 2 damage to any target. Kicker {4} — 4 damage instead.",
+    effects=[SpellEffect(EffectType.DAMAGE, 2, target_type=TargetType.CREATURE_OR_PLAYER)]
+)
+
+MISHRAS_BAUBLE = Card(
+    id="mishras_bauble", name="Mishra's Bauble",
+    mana_cost=ManaCost(), card_type=CardType.ARTIFACT,
+    colors=set(),
+    text="{T}, Sacrifice: Look at the top card of target player's library. Draw a card at the beginning of the next turn's upkeep.",
+    effects=[]
+)
+
+
+# ─────────────────────────────────────────────
+# Death's Shadow
+# ─────────────────────────────────────────────
+
+DEATHS_SHADOW = Card(
+    id="deaths_shadow", name="Death's Shadow",
+    mana_cost=ManaCost(black=1), card_type=CardType.CREATURE,
+    colors={Color.BLACK},
+    text="This creature gets -X/-X, where X is your life total.",
+    power=13, toughness=13
+)
+
+TEMUR_BATTLE_RAGE = Card(
+    id="temur_battle_rage", name="Temur Battle Rage",
+    mana_cost=ManaCost(red=1, generic=1), card_type=CardType.INSTANT,
+    colors={Color.RED},
+    text="Target creature gains double strike until end of turn. Ferocious — also gains trample if you control a creature with power 4 or greater.",
+    effects=[]
+)
+
+DAZE = Card(
+    id="daze", name="Daze",
+    mana_cost=ManaCost(blue=1, generic=1), card_type=CardType.INSTANT,
+    colors={Color.BLUE},
+    text="You may return an Island you control to its owner's hand rather than pay this spell's mana cost. Counter target spell unless its controller pays {1}.",
+    effects=[SpellEffect(EffectType.COUNTER)]
+)
+
+DELIRIUM_SKEINS = Card(
+    id="delirium_skeins", name="Delirium Skeins",
+    mana_cost=ManaCost(black=1, generic=2), card_type=CardType.SORCERY,
+    colors={Color.BLACK},
+    text="Each player discards three cards.",
+    effects=[]
+)
+
+STREET_WRAITH = Card(
+    id="street_wraith", name="Street Wraith",
+    mana_cost=ManaCost(black=2, generic=3), card_type=CardType.CREATURE,
+    colors={Color.BLACK},
+    text="Swampwalk. Cycling — Pay 2 life.",
+    power=3, toughness=4
+)
+
+
+# ─────────────────────────────────────────────
+# Tron
+# ─────────────────────────────────────────────
+
+KARN_LIBERATED = Card(
+    id="karn_liberated", name="Karn Liberated",
+    mana_cost=ManaCost(generic=7), card_type=CardType.PLANESWALKER,
+    colors=set(),
+    text="+4: Target player exiles a card from their hand. −3: Exile target permanent. −14: Restart the game, putting exiled Karn permanents onto the battlefield.",
+    effects=[]
+)
+
+CHROMATIC_STAR = Card(
+    id="chromatic_star", name="Chromatic Star",
+    mana_cost=ManaCost(generic=1), card_type=CardType.ARTIFACT,
+    colors=set(),
+    text="{1}, {T}, Sacrifice: Add one mana of any color. When this goes to graveyard, draw a card.",
+    effects=[]
+)
+
+CHROMATIC_SPHERE = Card(
+    id="chromatic_sphere", name="Chromatic Sphere",
+    mana_cost=ManaCost(generic=1), card_type=CardType.ARTIFACT,
+    colors=set(),
+    text="{1}, {T}, Sacrifice: Add one mana of any color. Draw a card.",
+    effects=[SpellEffect(EffectType.DRAW_CARD, 1)]
+)
+
+OBLIVION_STONE = Card(
+    id="oblivion_stone", name="Oblivion Stone",
+    mana_cost=ManaCost(generic=3), card_type=CardType.ARTIFACT,
+    colors=set(),
+    text="{4}, {T}: Put a fate counter on target permanent. {5}, {T}, Sacrifice: Destroy each nonland permanent without a fate counter.",
+    effects=[]
+)
+
+MINDSLAVER = Card(
+    id="mindslaver", name="Mindslaver",
+    mana_cost=ManaCost(generic=6), card_type=CardType.ARTIFACT,
+    colors=set(),
+    text="{4}, {T}, Sacrifice: You control target player during their next turn.",
+    effects=[]
+)
+
+# Hollow One: Stirling Castle is not a real MTG card — replaced with a generic placeholder
+STIRLING_CASTLE = _utility_land("Stirling Castle", {Color.COLORLESS}, "stirling_castle",
+    "(Placeholder — not a real MTG card.) {T}: Add {C}.")
+
+
 
 # ─────────────────────────────────────────────
 # Cartas Ad Nauseam (já parcialmente definidas acima)
@@ -593,6 +977,22 @@ CONCEALED_COURTYARD_CARD = Card(
     is_land=True, land_mana={Color.WHITE, Color.BLACK}
 )
 
+PENTAD_PRISM = Card(
+    id="pentad_prism", name="Pentad Prism",
+    mana_cost=ManaCost(generic=2), card_type=CardType.ARTIFACT,
+    colors=set(),
+    text="Pentad Prism enters the battlefield with two charge counters on it. Remove a charge counter from Pentad Prism: Add one mana of any color.",
+    effects=[]
+)
+
+SERUM_VISIONS = Card(
+    id="serum_visions", name="Serum Visions",
+    mana_cost=ManaCost(blue=1), card_type=CardType.SORCERY,
+    colors={Color.BLUE},
+    text="Draw a card. Scry 2.",
+    effects=[SpellEffect(EffectType.DRAW_CARD, 1)]
+)
+
 
 ALL_CARDS = {
     # Terrenos básicos
@@ -656,6 +1056,8 @@ ALL_CARDS = {
     ),
     "spoils_of_the_vault": SPOILS_OF_THE_VAULT_CARD,
     "path_to_exile": PATH_TO_EXILE,
+    "pentad_prism": PENTAD_PRISM,
+    "serum_visions": SERUM_VISIONS,
     # ── Terrenos duais / utilitários ──
     "seachrome_coast": SEACHROME_COAST,
     "concealed_courtyard": CONCEALED_COURTYARD_CARD,
@@ -665,6 +1067,69 @@ ALL_CARDS = {
     "godless_shrine": GODLESS_SHRINE,
     "gemstone_mine": GEMSTONE_MINE,
     "otawara_soaring_city": OTAWARA,
+    # ── Terrenos shocklands / fetchlands / fastlands ──
+    "blood_crypt": BLOOD_CRYPT,
+    "overgrown_tomb": OVERGROWN_TOMB,
+    "stomping_ground": STOMPING_GROUND,
+    "steam_vents": STEAM_VENTS,
+    "sacred_foundry": SACRED_FOUNDRY,
+    "scalding_tarn": SCALDING_TARN,
+    "bloodstained_mire": BLOODSTAINED_MIRE,
+    "spirebluff_canal": SPIREBLUFF_CANAL,
+    "blackcleave_cliffs": BLACKCLEAVE_CLIFFS,
+    "bazaar_of_baghdad": BAZAAR_OF_BAGHDAD,
+    "wastes": WASTES,
+    "urzas_mine": URZAS_MINE,
+    "urzas_power_plant": URZAS_POWER_PLANT,
+    "urzas_tower": URZAS_TOWER,
+    "stirling_castle": STIRLING_CASTLE,
+    # ── Jund ──
+    "bloodbraid_elf": BLOODBRAID_ELF,
+    "dark_confidant": DARK_CONFIDANT,
+    "kolahans_command": KOLAGHANS_COMMAND,
+    "fatal_push": FATAL_PUSH,
+    "inquisition_of_kozilek": INQUISITION_OF_KOZILEK,
+    "wrenn_and_six": WRENN_AND_SIX,
+    "liliana_of_the_veil": LILIANA_OF_THE_VEIL,
+    # ── Izzet Murktide ──
+    "murktide_regent": MURKTIDE_REGENT,
+    "ragavan_nimble_pilferer": RAGAVAN,
+    "dragons_rage_channeler": DRAGONS_RAGE_CHANNELER,
+    "expressive_iteration": EXPRESSIVE_ITERATION,
+    "spell_snare": SPELL_SNARE,
+    "unholy_heat": UNHOLY_HEAT,
+    "thought_scour": THOUGHT_SCOUR,
+    # ── Hollow One ──
+    "hollow_one": HOLLOW_ONE,
+    "goblin_charbelcher": GOBLIN_CHARBELCHER,
+    "flame_slash": FLAME_SLASH,
+    "faithless_looting": FAITHLESS_LOOTING,
+    "gurmag_angler": GURMAG_ANGLER,
+    "merciless_executioner": MERCILESS_EXECUTIONER,
+    "dread_return": DREAD_RETURN,
+    "vengevine": VENGEVINE,
+    "bloodghast": BLOODGHAST,
+    "bridge_from_below": BRIDGE_FROM_BELOW,
+    # ── Prowess ──
+    "monastery_swiftspear": MONASTERY_SWIFTSPEAR,
+    "soulscar_mage": SOUL_SCAR_MAGE,
+    "eidolon_of_the_great_revel": EIDOLON_OF_THE_GREAT_REVEL,
+    "lava_dart": LAVA_DART,
+    "rift_bolt": RIFT_BOLT,
+    "burst_lightning": BURST_LIGHTNING,
+    "mishras_bauble": MISHRAS_BAUBLE,
+    # ── Death's Shadow ──
+    "deaths_shadow": DEATHS_SHADOW,
+    "temur_battle_rage": TEMUR_BATTLE_RAGE,
+    "daze": DAZE,
+    "delirium_skeins": DELIRIUM_SKEINS,
+    "street_wraith": STREET_WRAITH,
+    # ── Tron ──
+    "karn_liberated": KARN_LIBERATED,
+    "chromatic_star": CHROMATIC_STAR,
+    "chromatic_sphere": CHROMATIC_SPHERE,
+    "oblivion_stone": OBLIVION_STONE,
+    "mindslaver": MINDSLAVER,
 }
 
 

@@ -8,6 +8,7 @@ from dataclasses import dataclass, field
 from .card import Color
 from .mana_engine import ManaAbilityEngine, LAND_MANA_ABILITIES
 from .mana_solver import ManaSolver, ManaPlan
+from .card_abilities_db import get_card_abilities
 
 
 # ─────────────────────────────────────────────
@@ -143,7 +144,7 @@ class LandPlanner:
 @dataclass
 class GameDecision:
     """Uma decisao da IA."""
-    action: str           # "CAST", "PLAY_LAND", "ATTACK", "PASS"
+    action: str           # "CAST", "PLAY_LAND", "ATTACK", "PASS", "SUSPEND"
     target: Any = None    # Carta ou alvo
     plan: Any = None      # Plano de mana (se aplicavel)
     reasoning: str = ""
@@ -204,6 +205,42 @@ class StrategicAI:
         ]
         return any(kw in name for kw in removal_keywords)
     
+    def _has_suspend_ability(self, card) -> bool:
+        """Verifica se a carta tem a mecanica Suspend."""
+        abilities_data = get_card_abilities(card.name.lower())
+        for ability in abilities_data.get('abilities', []):
+            if ability.get('type') == 'special_action' and ability.get('effect') == 'suspend':
+                return True
+        return False
+    
+    def _can_go_for_combo(self, player, castable_names: set) -> bool:
+        """
+        Retorna True quando as pecas do combo estao disponiveis.
+        Combo A: Angel's Grace + Ad Nauseam (5 mana)
+        Combo B: Spoils of the Vault + Thassa's Oracle (com Phyrexian Unlife)
+        """
+        hand_names = {c.name for c in player.hand}
+        bf_names = {c.name for c in player.battlefield}
+        
+        has_protection = (
+            'Angel\'s Grace' in hand_names or
+            'Phyrexian Unlife' in bf_names or
+            player.cant_lose_game_this_turn
+        )
+        
+        # Combo A
+        has_ad_nauseam = 'Ad Nauseam' in castable_names
+        if has_protection and has_ad_nauseam:
+            return True
+        
+        # Combo B
+        has_spoils = 'Spoils of the Vault' in castable_names
+        has_oracle = 'Thassa\'s Oracle' in castable_names or "Thassa's Oracle" in hand_names
+        if has_protection and has_spoils and has_oracle:
+            return True
+        
+        return False
+    
     def decide(self, player, opponent, game_state) -> 'GameDecision':
         """
         Toma uma decisao para o turno atual.
@@ -227,8 +264,29 @@ class StrategicAI:
                     reasoning=land_plan.reasoning
                 )
         
-        # 2. Conjurar magias?
+        # 2. Conjurar magias ou Suspend?
         castable = self.mana_solver.get_all_castable(player, player.hand)
+        
+        # Cartas com Suspend na mao (sempre podem ser suspensas, custam 0)
+        suspend_cards = [c for c in player.hand
+                         if self._has_suspend_ability(c) and c not in [s for s, _ in castable]]
+        if suspend_cards:
+            # Prioriza Lotus Bloom (T1) e Profane Tutor (quando combo perto)
+            for sc in suspend_cards:
+                if 'lotus' in sc.name.lower():
+                    return GameDecision(
+                        action="SUSPEND",
+                        target=sc,
+                        reasoning=f"Suspend {sc.name} para mana futura"
+                    )
+            for sc in suspend_cards:
+                if 'profane' in sc.name.lower() or 'tutor' in sc.name.lower():
+                    return GameDecision(
+                        action="SUSPEND",
+                        target=sc,
+                        reasoning=f"Suspend {sc.name} para buscar combo"
+                    )
+        
         if castable:
             # Escolhe a melhor magia para conjurar (passando nivel de ameaca)
             best_spell, best_plan = self._choose_best_spell(castable, player, opponent, threat_level)
@@ -260,33 +318,67 @@ class StrategicAI:
     def _choose_best_spell(self, castable: List, player, opponent, threat_level: float = 0.0) -> Tuple:
         """Escolhe a melhor magia para conjurar.
         
-        Quando o oponente tem criaturas ameacadoras (threat_level > 4),
-        remocao recebe prioridade sobre criaturas proprias.
+        Prioridade de combo do Ad Nauseam:
+        1. Angel's Grace -> Ad Nauseam (combo turn)
+        2. Spoils + Oracle (combo alternativo com Unlife)
+        3. Phyrexian Unlife (setup de protecao)
+        4. Pentad Prism (ramp)
+        5. Cantrips (dig)
+        6. Remocao se ameaca alta
         """
         if not castable:
             return None, None
         
-        # Prioridade para Ad Nauseam (combo)
+        castable_names = {spell.name for spell, _ in castable}
+        
+        # Turno do combo: se tem protecao E Ad Nauseam castavel
+        if self._can_go_for_combo(player, castable_names):
+            # Passo 1: Conjura Angel's Grace primeiro se nao esta protegido
+            bf_names = {c.name for c in player.battlefield}
+            if not player.cant_lose_game_this_turn and 'Phyrexian Unlife' not in bf_names:
+                for spell, plan in castable:
+                    if "grace" in spell.name.lower():
+                        return spell, plan
+            
+            # Passo 2: Conjura Ad Nauseam (combo A)
+            for spell, plan in castable:
+                if "ad nauseam" in spell.name.lower():
+                    return spell, plan
+            
+            # Passo 3: Spoils para esvaziar biblioteca (combo B)
+            for spell, plan in castable:
+                if "spoils" in spell.name.lower():
+                    return spell, plan
+            
+            # Passo 4: Oracle para ganhar com biblioteca vazia
+            for spell, plan in castable:
+                if "oracle" in spell.name.lower():
+                    return spell, plan
+        
+        # Setup do combo: Phyrexian Unlife para protecao
+        bf_names = {c.name for c in player.battlefield}
+        if 'Phyrexian Unlife' not in bf_names:
+            for spell, plan in castable:
+                if 'unlife' in spell.name.lower() or 'phyrexian unlife' == spell.name.lower():
+                    return spell, plan
+        
+        # Ramp: Pentad Prism
         for spell, plan in castable:
-            if "ad nauseam" in spell.name.lower():
+            if 'pentad' in spell.name.lower():
                 return spell, plan
         
-        # Prioridade para tutor effects
+        # Prioridade para tutor effects (buscam peca do combo)
         for spell, plan in castable:
             if "tutor" in spell.name.lower() or "profane" in spell.name.lower():
                 return spell, plan
         
-        # Prioridade para protecao
+        # Cantrips: dig para o combo
         for spell, plan in castable:
-            if "grace" in spell.name.lower() or "pact" in spell.name.lower():
+            name_l = spell.name.lower()
+            if any(kw in name_l for kw in ('serum', 'preordain', 'sleight', 'visions')):
                 return spell, plan
         
-        # Prioridade para win condition
-        for spell, plan in castable:
-            if "oracle" in spell.name.lower():
-                return spell, plan
-        
-        # Prioridade para search de terrenos (Amulet Titan lines)
+        # Search de terrenos (Amulet Titan lines)
         for spell, plan in castable:
             name_l = spell.name.lower()
             if any(kw in name_l for kw in ("scrying", "stirrings", "expedition")):

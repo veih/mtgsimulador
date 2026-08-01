@@ -161,9 +161,15 @@ AD_NAUSEAM_ABILITIES = {
         "type": "sorcery",
         "abilities": [
             {
+                "type": "special_action",
+                "text": "Suspend 2\u2014{1}{B}",
+                "effect": "suspend",
+                "params": {"time_counters": 2, "cost": 2}
+            },
+            {
                 "type": "sorcery_effect",
                 "text": "Search your library for a card, put that card into your hand, discard a card, then shuffle.",
-                "effect": "tutor_and_discard",
+                "effect": "profane_tutor_effect",
                 "params": {"search_library": True, "discard": 1, "shuffle": True}
             }
         ]
@@ -207,6 +213,42 @@ AD_NAUSEAM_ABILITIES = {
                 "text": "Exile target creature. Its controller may search their library for a basic land card, put that card onto the battlefield tapped, then shuffle.",
                 "effect": "exile_creature",
                 "params": {"target_type": "creature", "opponent_searches_basic_land": True}
+            }
+        ]
+    },
+    
+    "pentad prism": {
+        "cmc": 2,
+        "colors": [],
+        "type": "artifact",
+        "abilities": [
+            {
+                "type": "triggered",
+                "event": GameEvent.PERMANENT_ENTERS,
+                "text": "Pentad Prism enters with two charge counters.",
+                "effect": "pentad_prism_etb",
+                "params": {"charge_counters": 2}
+            },
+            {
+                "type": "activated",
+                "cost": "Remove a charge counter",
+                "text": "Remove a charge counter from Pentad Prism: Add one mana of any color.",
+                "effect": "pentad_prism_tap",
+                "params": {"remove_counter": True, "add_mana": 1, "any_color": True}
+            }
+        ]
+    },
+    
+    "serum visions": {
+        "cmc": 1,
+        "colors": [Color.BLUE],
+        "type": "sorcery",
+        "abilities": [
+            {
+                "type": "sorcery_effect",
+                "text": "Draw a card. Scry 2.",
+                "effect": "serum_visions_effect",
+                "params": {"draw": 1, "scry": 2}
             }
         ]
     },
