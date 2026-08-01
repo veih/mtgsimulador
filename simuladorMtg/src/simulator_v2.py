@@ -109,6 +109,13 @@ class MatchSimulatorV2:
                 winner_name = self.name_b
             else:  # -1 = empate
                 winner_name = "Empate"
+        elif p1.life <= 0 and p2.life <= 0:
+            # Ambos chegaram a 0 simultaneamente
+            winner_name = "Empate"
+        elif p1.life <= 0:
+            winner_name = self.name_b
+        elif p2.life <= 0:
+            winner_name = self.name_a
         elif p1.life > p2.life:
             winner_name = self.name_a
         elif p2.life > p1.life:

@@ -56,10 +56,14 @@ class ReplayRecorder:
 
     def _serialize_card(self, card: Card) -> Dict[str, Any]:
         """Serializa uma carta."""
+        if card.is_land:
+            card_type_str = "LAND"
+        else:
+            card_type_str = card.card_type.name
         return {
             "name": card.name,
             "mana_cost": str(card.mana_cost),
-            "type": card.card_type.name,
+            "type": card_type_str,
             "power": card.effective_power if card.is_creature else None,
             "toughness": card.effective_toughness if card.is_creature else None,
             "tapped": card.tapped,

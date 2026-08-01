@@ -546,9 +546,9 @@ class RulesEngineV2:
                 countered = self.stack.pop()
                 if countered:
                     self._log(f"  Contra: {countered.description}")
-            # Vai para o campo como permanente (simplificado)
-            player.battlefield.append(card)
-            self.event_bus.emit_simple(GameEvent.PERMANENT_ENTERS, source=card, controller=player)
+            # Instants vão para o cemitério após resolver (não ficam no campo)
+            player.graveyard.append(card)
+            self._log(f"  {card.name} foi para o cemitério")
         
         elif effect_name == "path_to_exile_effect":
             # Exile criatura do oponente

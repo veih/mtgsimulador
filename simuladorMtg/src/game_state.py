@@ -211,13 +211,15 @@ class GameState:
         # Verifica se player1 morreu (considerando Angel's Grace e Phyrexian Unlife)
         if self.player1.is_dead:
             if not self.player1.cant_lose_game_this_turn:
-                if not (self.player1.has_phyrexian_unlife and self.player1.life == 0):
+                has_unlife = any(getattr(c, 'name', '') == 'Phyrexian Unlife' for c in self.player1.battlefield)
+                if not has_unlife:
                     self.winner = 1
                     return True
         # Verifica se player2 morreu
         if self.player2.is_dead:
             if not self.player2.cant_lose_game_this_turn:
-                if not (self.player2.has_phyrexian_unlife and self.player2.life == 0):
+                has_unlife = any(getattr(c, 'name', '') == 'Phyrexian Unlife' for c in self.player2.battlefield)
+                if not has_unlife:
                     self.winner = 0
                     return True
         # Deck out

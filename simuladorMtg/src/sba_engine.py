@@ -31,7 +31,13 @@ class SBAEngine:
         for player_idx, player in enumerate([state.player1, state.player2]):
             if player.life <= 0:
                 if not player.cant_lose_game_this_turn:
-                    if not (player.has_phyrexian_unlife and player.life == 0):
+                    # Phyrexian Unlife protege enquanto estiver no campo
+                    has_unlife_in_play = any(
+                        getattr(c, 'name', '') == 'Phyrexian Unlife'
+                        for c in player.battlefield
+                    )
+                    if not has_unlife_in_play:
+                        player.has_phyrexian_unlife = False  # sync flag
                         state.winner = 2 if player_idx == 0 else 1
                         self.event_bus.emit_simple(
                             GameEvent.GAME_LOST,

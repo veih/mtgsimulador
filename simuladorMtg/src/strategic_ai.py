@@ -286,6 +286,17 @@ class StrategicAI:
             if "oracle" in spell.name.lower():
                 return spell, plan
         
+        # Prioridade para search de terrenos (Amulet Titan lines)
+        for spell, plan in castable:
+            name_l = spell.name.lower()
+            if any(kw in name_l for kw in ("scrying", "stirrings", "expedition")):
+                return spell, plan
+        
+        # Prioridade para criaturas grandes (win condition ofensivo)
+        for spell, plan in castable:
+            if getattr(spell, 'is_creature', False) and getattr(spell, 'power', 0) >= 5:
+                return spell, plan
+        
         # Se oponente tem ameaca alta (power >= 4 sem bloqueador), priorizar remocao
         if threat_level >= 4.0:
             for spell, plan in castable:

@@ -14,9 +14,32 @@ def _land(name: str, color: Color) -> Card:
     return Card(
         id=name.lower().replace(" ", "_"),
         name=name, mana_cost=ManaCost(),
-        card_type=CardType.ARTIFACT,  # terreno tratado separadamente
+        card_type=CardType.LAND,
         colors=set(), text=f"Tap: add {color.value}",
         is_land=True, land_mana={color}
+    )
+
+
+def _dual_land(name: str, colors: set, text: str = "") -> Card:
+    """Cria um terreno dual (entra virado ou paga vida)."""
+    return Card(
+        id=name.lower().replace(" ", "_").replace("'", "").replace(",", ""),
+        name=name, mana_cost=ManaCost(),
+        card_type=CardType.LAND,
+        colors=set(), text=text or f"Tap: add one mana of {' or '.join(c.value for c in colors)}.",
+        is_land=True, land_mana=colors
+    )
+
+
+def _utility_land(name: str, colors: set, card_id: str = "", text: str = "") -> Card:
+    """Cria terreno utilitário (não-básico)."""
+    cid = card_id or name.lower().replace(" ", "_").replace("'", "").replace(",", "").replace(".", "")
+    return Card(
+        id=cid,
+        name=name, mana_cost=ManaCost(),
+        card_type=CardType.LAND,
+        colors=set(), text=text,
+        is_land=True, land_mana=colors if colors else {Color.COLORLESS}
     )
 
 PLAINS = _land("Plains", Color.WHITE)
@@ -368,8 +391,211 @@ BARKTOOTH = Card(
 # Dicionário de todas as cartas
 # ─────────────────────────────────────────────
 
+
+# ─────────────────────────────────────────────
+# Cartas do Amulet Titan
+# ─────────────────────────────────────────────
+
+PRIMEVAL_TITAN = Card(
+    id="primeval_titan", name="Primeval Titan",
+    mana_cost=ManaCost(green=2, generic=4), card_type=CardType.CREATURE,
+    colors={Color.GREEN},
+    text="Trample. Whenever Primeval Titan enters or attacks, search your library for up to two land cards, put them onto the battlefield tapped, then shuffle.",
+    power=6, toughness=6,
+    keywords=[Keyword.TRAMPLE]
+)
+
+SIMIAN_SPIRIT_GUIDE = Card(
+    id="simian_spirit_guide", name="Simian Spirit Guide",
+    mana_cost=ManaCost(red=1, generic=2), card_type=CardType.CREATURE,
+    colors={Color.RED},
+    text="Exile Simian Spirit Guide from your hand: Add {R}.",
+    power=2, toughness=2
+)
+
+GOBLIN_ENGINEER = Card(
+    id="goblin_engineer", name="Goblin Engineer",
+    mana_cost=ManaCost(red=1, generic=1), card_type=CardType.CREATURE,
+    colors={Color.RED},
+    text="When Goblin Engineer enters, you may search your library for an artifact card with mana value 3 or less, put it into your graveyard, then shuffle.",
+    power=1, toughness=2
+)
+
+ANCIENT_STIRRINGS = Card(
+    id="ancient_stirrings", name="Ancient Stirrings",
+    mana_cost=ManaCost(green=1), card_type=CardType.SORCERY,
+    colors={Color.GREEN},
+    text="Look at the top five cards of your library. You may reveal a colorless card from among them and put it into your hand. Put the rest on the bottom in any order.",
+    effects=[SpellEffect(EffectType.DRAW_CARD, 1)]
+)
+
+SYLVAN_SCRYING = Card(
+    id="sylvan_scrying", name="Sylvan Scrying",
+    mana_cost=ManaCost(green=1, generic=1), card_type=CardType.SORCERY,
+    colors={Color.GREEN},
+    text="Search your library for any land card, reveal it, put it into your hand, then shuffle.",
+    effects=[SpellEffect(EffectType.DRAW_CARD, 1)]
+)
+
+EXPEDITION_MAP = Card(
+    id="expedition_map", name="Expedition Map",
+    mana_cost=ManaCost(generic=1), card_type=CardType.ARTIFACT,
+    colors=set(),
+    text="{2}, Tap, Sacrifice Expedition Map: Search your library for any land card, reveal it, put it into your hand, then shuffle.",
+    effects=[SpellEffect(EffectType.DRAW_CARD, 1)]
+)
+
+AMULET_OF_VIGOR = Card(
+    id="amulet_of_vigor", name="Amulet of Vigor",
+    mana_cost=ManaCost(generic=1), card_type=CardType.ARTIFACT,
+    colors=set(),
+    text="Whenever a permanent enters the battlefield tapped and under your control, untap it."
+)
+
+URZAS_SAGA = Card(
+    id="urzas_saga", name="Urza's Saga",
+    mana_cost=ManaCost(), card_type=CardType.ENCHANTMENT,
+    colors=set(),
+    text="Enchantment — Saga. (As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.) I — Add {C}{C}. II — You may search your library for an artifact card with mana value 0 or 1. III — Create a 0/0 colorless Construct token.",
+    is_land=False
+)
+
+ELDRAZI_TEMPLE = _utility_land(
+    "Eldrazi Temple", {Color.COLORLESS}, "eldrazi_temple",
+    "Tap: Add {C}. Tap: Add {C}{C}. Spend this mana only to cast Eldrazi spells or activate abilities of Eldrazi."
+)
+
+CLOUDPOST = _utility_land(
+    "Cloudpost", {Color.COLORLESS}, "cloudpost",
+    "Tap: Add {C} for each Locus on the battlefield."
+)
+
+TOLARIA_WEST = _utility_land(
+    "Tolaria West", {Color.BLUE}, "tolaria_west",
+    "Tap: Add {U}. Transmute {1}{U}{U}."
+)
+
+VALAKUT = _utility_land(
+    "Valakut, the Molten Pinnacle", {Color.RED}, "valakut_the_molten_pinnacle",
+    "Valakut enters tapped. Tap: Add {R}. Whenever a Mountain enters under your control, if you control at least 5 other Mountains, Valakut deals 3 damage to any target."
+)
+
+
+# ─────────────────────────────────────────────
+# Terrenos duais dos decks Modern
+# ─────────────────────────────────────────────
+
+SEACHROME_COAST = _dual_land("Seachrome Coast", {Color.WHITE, Color.BLUE})
+WATERY_GRAVE = _dual_land("Watery Grave", {Color.BLUE, Color.BLACK})
+HALLOWED_FOUNTAIN = _dual_land("Hallowed Fountain", {Color.WHITE, Color.BLUE})
+GODLESS_SHRINE = _dual_land("Godless Shrine", {Color.WHITE, Color.BLACK})
+DARKSLICK_SHORES = _dual_land("Darkslick Shores", {Color.BLUE, Color.BLACK})
+GEMSTONE_MINE = _utility_land("Gemstone Mine", {Color.WHITE, Color.BLUE, Color.BLACK, Color.RED, Color.GREEN}, "gemstone_mine", "Tap: Add one mana of any color. Remove a mining counter.")
+OTAWARA = _utility_land("Otawara, Soaring City", {Color.BLUE}, "otawara_soaring_city", "Tap: Add {U}. Channel — {X}{U}{U}: Return up to one target artifact, creature, enchantment, or planeswalker to its owner's hand.")
+
+
+# ─────────────────────────────────────────────
+# Cartas Ad Nauseam (já parcialmente definidas acima)
+# ─────────────────────────────────────────────
+
+AD_NAUSEAM = Card(
+    id="ad_nauseam", name="Ad Nauseam",
+    mana_cost=ManaCost(black=2, white=1, generic=2), card_type=CardType.INSTANT,
+    colors={Color.BLACK, Color.WHITE},
+    text="Reveal the top card of your library and put it into your hand. You lose life equal to its mana value. You may repeat this process any number of times.",
+    effects=[]
+)
+
+ANGELS_GRACE = Card(
+    id="angels_grace", name="Angel's Grace",
+    mana_cost=ManaCost(white=1), card_type=CardType.INSTANT,
+    colors={Color.WHITE},
+    text="Split second. You can't lose the game this turn and your opponents can't win the game this turn. Until end of turn, damage that would reduce your life total to less than 1 reduces it to 1 instead.",
+    effects=[]
+)
+
+PHYREXIAN_UNLIFE = Card(
+    id="phyrexian_unlife", name="Phyrexian Unlife",
+    mana_cost=ManaCost(white=2, generic=1), card_type=CardType.ENCHANTMENT,
+    colors={Color.WHITE},
+    text="You don't lose the game for having 0 or less life. As long as your life total is 0 or less, you're poisoned.",
+    effects=[]
+)
+
+LOTUS_BLOOM = Card(
+    id="lotus_bloom", name="Lotus Bloom",
+    mana_cost=ManaCost(), card_type=CardType.ARTIFACT,
+    colors=set(),
+    text="Suspend 3 — {0}. Sacrifice Lotus Bloom: Add three mana of any one color.",
+    effects=[]
+)
+
+PACT_OF_NEGATION = Card(
+    id="pact_of_negation", name="Pact of Negation",
+    mana_cost=ManaCost(), card_type=CardType.INSTANT,
+    colors=set(),
+    text="Counter target spell. At the beginning of your next upkeep, pay {3}{U}{U}. If you don't, you lose the game.",
+    effects=[]
+)
+
+FORCE_OF_NEGATION = Card(
+    id="force_of_negation", name="Force of Negation",
+    mana_cost=ManaCost(blue=2, generic=1), card_type=CardType.INSTANT,
+    colors={Color.BLUE},
+    text="If it's not your turn, you may exile a blue card from your hand rather than pay this spell's mana cost. Counter target noncreature spell. If this spell was cast during your turn, draw a card.",
+    effects=[]
+)
+
+PREORDAIN = Card(
+    id="preordain", name="Preordain",
+    mana_cost=ManaCost(blue=1), card_type=CardType.SORCERY,
+    colors={Color.BLUE},
+    text="Scry 2, then draw a card.",
+    effects=[SpellEffect(EffectType.DRAW_CARD, 1)]
+)
+
+PROFANE_TUTOR = Card(
+    id="profane_tutor", name="Profane Tutor",
+    mana_cost=ManaCost(), card_type=CardType.SORCERY,
+    colors=set(),
+    text="Suspend 2 — {1}{B}. Search your library for a card and put it into your hand, then shuffle.",
+    effects=[SpellEffect(EffectType.DRAW_CARD, 1)]
+)
+
+THASSAS_ORACLE = Card(
+    id="thassas_oracle", name="Thassa's Oracle",
+    mana_cost=ManaCost(blue=2), card_type=CardType.CREATURE,
+    colors={Color.BLUE},
+    text="When Thassa's Oracle enters, look at the top X cards of your library, where X is your devotion to blue. Put up to one of them on top and the rest on the bottom. If X is greater than or equal to the number of cards in your library, you win the game.",
+    power=1, toughness=3
+)
+
+SPOILS_OF_THE_VAULT_CARD = Card(
+    id="spoils_of_the_vault", name="Spoils of the Vault",
+    mana_cost=ManaCost(black=1), card_type=CardType.INSTANT,
+    colors={Color.BLACK},
+    text="Name a card. Reveal cards from the top of your library until you reveal the named card, then put that card into your hand. You lose 1 life for each card revealed this way.",
+    effects=[]
+)
+
+PATH_TO_EXILE = Card(
+    id="path_to_exile", name="Path to Exile",
+    mana_cost=ManaCost(white=1), card_type=CardType.INSTANT,
+    colors={Color.WHITE},
+    text="Exile target creature. Its controller may search their library for a basic land card, put it onto the battlefield tapped, then shuffle.",
+    effects=[SpellEffect(EffectType.EXILE, target_type=TargetType.CREATURE)]
+)
+
+CONCEALED_COURTYARD_CARD = Card(
+    id="concealed_courtyard", name="Concealed Courtyard",
+    mana_cost=ManaCost(), card_type=CardType.LAND,
+    colors=set(), text="Concealed Courtyard enters untapped if you control two or fewer other lands. Tap: Add W or B.",
+    is_land=True, land_mana={Color.WHITE, Color.BLACK}
+)
+
+
 ALL_CARDS = {
-    # Terrenos
+    # Terrenos básicos
     "plains": PLAINS, "island": ISLAND, "swamp": SWAMP,
     "mountain": MOUNTAIN, "forest": FOREST,
     # Red
@@ -397,29 +623,48 @@ ALL_CARDS = {
     "phantasmal_bear": PHANTASMAL_BEAR,
     # Multi
     "knight_of_white": KNIGHT_OF_THE_WHITE, "barktooth": BARKTOOTH,
-    # Green pump (Giant Growth é verde na verdade, vamos corrigir)
     "giant_growth": GIANT_GROWTH,
-    # Cartas adicionais para Modern
+    # ── Amulet Titan ──
+    "primeval_titan": PRIMEVAL_TITAN,
+    "simian_spirit_guide": SIMIAN_SPIRIT_GUIDE,
+    "goblin_engineer": GOBLIN_ENGINEER,
+    "ancient_stirrings": ANCIENT_STIRRINGS,
+    "sylvan_scrying": SYLVAN_SCRYING,
+    "expedition_map": EXPEDITION_MAP,
+    "amulet_of_vigor": AMULET_OF_VIGOR,
+    "urzas_saga": URZAS_SAGA,
+    "eldrazi_temple": ELDRAZI_TEMPLE,
+    "cloudpost": CLOUDPOST,
+    "tolaria_west": TOLARIA_WEST,
+    "valakut_the_molten_pinnacle": VALAKUT,
+    # ── Ad Nauseam ──
+    "ad_nauseam": AD_NAUSEAM,
+    "angels_grace": ANGELS_GRACE,
+    "phyrexian_unlife": PHYREXIAN_UNLIFE,
+    "lotus_bloom": LOTUS_BLOOM,
+    "pact_of_negation": PACT_OF_NEGATION,
+    "force_of_negation": FORCE_OF_NEGATION,
+    "preordain": PREORDAIN,
+    "profane_tutor": PROFANE_TUTOR,
+    "thassas_oracle": THASSAS_ORACLE,
     "sleight_of_hand": Card(
         id="sleight_of_hand", name="Sleight of Hand",
         mana_cost=ManaCost(blue=1), card_type=CardType.SORCERY,
         colors={Color.BLUE},
         text="Look at the top two cards of your library. Put one into your hand and the other on the bottom.",
-        effects=[]
+        effects=[SpellEffect(EffectType.DRAW_CARD, 1)]
     ),
-    "spoils_of_the_vault": Card(
-        id="spoils_of_the_vault", name="Spoils of the Vault",
-        mana_cost=ManaCost(black=1), card_type=CardType.SORCERY,
-        colors={Color.BLACK},
-        text="Exile the top card of your library. You gain life equal to its mana value. Draw a card.",
-        effects=[]
-    ),
-    "concealed_courtyard": Card(
-        id="concealed_courtyard", name="Concealed Courtyard",
-        mana_cost=ManaCost(), card_type=CardType.ARTIFACT,
-        colors=set(), text="Concealed Courtyard enters tapped. Tap: add W or R.",
-        is_land=True, land_mana={Color.WHITE, Color.RED}
-    ),
+    "spoils_of_the_vault": SPOILS_OF_THE_VAULT_CARD,
+    "path_to_exile": PATH_TO_EXILE,
+    # ── Terrenos duais / utilitários ──
+    "seachrome_coast": SEACHROME_COAST,
+    "concealed_courtyard": CONCEALED_COURTYARD_CARD,
+    "darkslick_shores": DARKSLICK_SHORES,
+    "hallowed_fountain": HALLOWED_FOUNTAIN,
+    "watery_grave": WATERY_GRAVE,
+    "godless_shrine": GODLESS_SHRINE,
+    "gemstone_mine": GEMSTONE_MINE,
+    "otawara_soaring_city": OTAWARA,
 }
 
 

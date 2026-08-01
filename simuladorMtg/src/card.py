@@ -19,6 +19,7 @@ class CardType(Enum):
     PLANESWALKER = auto()
     ARTIFACT = auto()
     ENCHANTMENT = auto()
+    LAND = auto()
 
 
 class Color(Enum):
